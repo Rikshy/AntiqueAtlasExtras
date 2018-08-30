@@ -13,9 +13,9 @@ import org.apache.logging.log4j.Logger;
 public class AtlasExtras
 {
     public static final String MODID = "atlasextras";
-    public static final String NAME = "Antique Atlas Extras";
+    public static final String NAME = "Atlas Extras";
     public static final String VERSION = "@version@";
-    public static final String DEPENDENCY = "";
+    public static final String DEPENDENCY = "required-after:antiqueatlas;after:signpost;";
 
     public static final String CLIENT_PROXY = "de.shyrik.atlasextras.client.ClientProxy";
     public static final String SERVER_PROXY = "de.shyrik.atlasextras.common.CommonProxy";

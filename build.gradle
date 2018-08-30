@@ -12,8 +12,8 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 
 
 version = "$mod_version.$patch_version"
-group = "de.shyrik.atlasextras" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "AtlasExtras-$mod_version.$patch_version"
+group = "de.shyrik" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "AtlasExtras-$mc_version"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
