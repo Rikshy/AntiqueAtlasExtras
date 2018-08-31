@@ -1,11 +1,10 @@
 package de.shyrik.atlasextras.compat;
 
-import de.shyrik.atlasextras.common.CommonProxy;
+import de.shyrik.atlasextras.client.AtlasHandler;
 import gollorum.signpost.blocks.SuperPostPost;
 import gollorum.signpost.event.UpdateWaystoneEvent;
-import hunternif.mc.atlas.api.AtlasAPI;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.world.World;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -15,16 +14,17 @@ public class SignpostHandler {
     @SubscribeEvent
     @Optional.Method(modid = "signpost")
     public void onUpdateWaystoneEvent(UpdateWaystoneEvent event) {
+        BlockPos pos = new BlockPos(event.x, event.y, event.z);
         switch (event.type) {
             case PLACED:
-                addWay(event.world, event.x, event.z, event.name);
+                AtlasHandler.addMarker(event.world, pos, event.name, true, false);
                 break;
             case NAMECHANGED:
-                removeMarker(event.world, event.x, event.z);
-                //addWay(event.world, event.x, event.z, event.name);
+                AtlasHandler.removeMarker(event.world, pos);
+                AtlasHandler.addMarker(event.world, pos, event.name, true, false);
                 break;
             case DESTROYED:
-                removeMarker(event.world, event.x, event.z);
+                AtlasHandler.removeMarker(event.world, pos);
                 break;
         }
     }
@@ -33,7 +33,7 @@ public class SignpostHandler {
     @Optional.Method(modid = "signpost")
     public void onSignpostPlaced(BlockEvent.PlaceEvent event) {
         if(event.getPlacedBlock().getBlock() instanceof SuperPostPost){
-            addPost(event.getWorld(), event.getPos().getX(), event.getPos().getZ(), I18n.format("atlasextras.marker.signpost"));
+            AtlasHandler.addMarker(event.getWorld(), event.getPos(), I18n.format("atlasextras.marker.signpost"), false, true);
         }
     }
 
@@ -41,18 +41,7 @@ public class SignpostHandler {
     @Optional.Method(modid = "signpost")
     public void onSignpostBroken(BlockEvent.BreakEvent event) {
         if (event.getState().getBlock() instanceof SuperPostPost) {
-            removeMarker(event.getWorld(), event.getPos().getX(), event.getPos().getZ());
+            AtlasHandler.removeMarker(event.getWorld(), event.getPos());
         }
-    }
-
-    private static void addPost(World world, int x, int z, String name) {
-        AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, CommonProxy.MARKER_SIGNPOST.toString(), name, x, z);
-    }
-
-    private static void addWay(World world, int x, int z, String name) {
-        AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, CommonProxy.MARKER_WAYSTONE.toString(), name, x, z);
-    }
-
-    private static void removeMarker(World world, int x, int z) {
     }
 }

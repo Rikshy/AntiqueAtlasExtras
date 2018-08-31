@@ -36,15 +36,15 @@ public class OverlayHandler {
             int gameHeight = event.getResolution().getScaledHeight();
 
             int row = 0;
-            if(Configuration.enablePositionInfo) {
+            if(Configuration.GENERAL.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos);
             }
-            if(Configuration.enableBiomeInfo) {
+            if(Configuration.GENERAL.enableBiomeInfo) {
                 String infoBiome = mc.world.getBiome(pos).getBiomeName();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoBiome);
             }
-            if(Configuration.enableTimeInfo) {
+            if(Configuration.GENERAL.enableTimeInfo) {
                 MCDateTime dt = new MCDateTime(mc.world.getWorldTime());
 
                 String infoTime = String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min);
@@ -65,7 +65,7 @@ public class OverlayHandler {
         if (AAOConfig.position.alignBottom) atlasY = gameHeight - (atlasY + AAOConfig.position.height);
         int startY = atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height);
 
-        mc.fontRenderer.drawString(info, startX, startY, Configuration.RGB);
+        mc.fontRenderer.drawString(info, startX, startY, Configuration.GENERAL.RGB);
     }
 
     private static Integer getPlayerAtlas(EntityPlayer player) {

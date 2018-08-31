@@ -20,6 +20,8 @@ public class AtlasExtras
     public static final String CLIENT_PROXY = "de.shyrik.atlasextras.client.ClientProxy";
     public static final String SERVER_PROXY = "de.shyrik.atlasextras.common.CommonProxy";
 
+    public static final String CHANNEL = "atlasextras";
+
     @SidedProxy(clientSide = AtlasExtras.CLIENT_PROXY, serverSide = AtlasExtras.SERVER_PROXY)
     public static CommonProxy proxy;
 
