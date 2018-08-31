@@ -1,6 +1,6 @@
-package de.shyrik.atlasextras.compat;
+package de.shyrik.atlasextras.features.travel;
 
-import de.shyrik.atlasextras.Configuration;
+import de.shyrik.atlasextras.core.Configuration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;

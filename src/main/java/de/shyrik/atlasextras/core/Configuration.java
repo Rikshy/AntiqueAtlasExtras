@@ -1,5 +1,6 @@
-package de.shyrik.atlasextras;
+package de.shyrik.atlasextras.core;
 
+import de.shyrik.atlasextras.AtlasExtras;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

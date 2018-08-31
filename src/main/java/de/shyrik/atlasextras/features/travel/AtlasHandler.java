@@ -1,7 +1,6 @@
-package de.shyrik.atlasextras.client;
+package de.shyrik.atlasextras.features.travel;
 
-import de.shyrik.atlasextras.common.CommonProxy;
-import de.shyrik.atlasextras.compat.MarkerMap;
+import de.shyrik.atlasextras.core.CommonProxy;
 import de.shyrik.atlasextras.network.MarkerClickPacket;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import hunternif.mc.atlas.api.AtlasAPI;

@@ -1,10 +1,9 @@
-package de.shyrik.atlasextras.common;
+package de.shyrik.atlasextras.core;
 
 import de.shyrik.atlasextras.AtlasExtras;
-import de.shyrik.atlasextras.Configuration;
-import de.shyrik.atlasextras.compat.AtlasExtrasCostHandler;
+import de.shyrik.atlasextras.features.travel.AtlasExtrasCostHandler;
 import de.shyrik.atlasextras.compat.SignpostHandler;
-import de.shyrik.atlasextras.compat.TravelHandler;
+import de.shyrik.atlasextras.features.travel.TravelHandler;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;

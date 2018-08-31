@@ -1,8 +1,7 @@
-package de.shyrik.atlasextras.client;
+package de.shyrik.atlasextras.core;
 
 import de.shyrik.atlasextras.AtlasExtras;
-import de.shyrik.atlasextras.Configuration;
-import de.shyrik.atlasextras.common.CommonProxy;
+import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import hunternif.mc.atlas.api.AtlasAPI;
 import hunternif.mc.atlas.registry.MarkerType;
 import net.minecraft.util.ResourceLocation;

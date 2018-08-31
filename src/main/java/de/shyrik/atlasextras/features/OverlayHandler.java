@@ -1,6 +1,6 @@
-package de.shyrik.atlasextras.client;
+package de.shyrik.atlasextras.features;
 
-import de.shyrik.atlasextras.Configuration;
+import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.util.MCDateTime;
 import hunternif.mc.atlas.RegistrarAntiqueAtlas;
 import hunternif.mc.atlas.SettingsConfig;

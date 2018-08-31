@@ -1,4 +1,4 @@
-package de.shyrik.atlasextras.compat;
+package de.shyrik.atlasextras.features.travel;
 
 import de.shyrik.atlasextras.AtlasExtras;
 import net.minecraft.client.Minecraft;
