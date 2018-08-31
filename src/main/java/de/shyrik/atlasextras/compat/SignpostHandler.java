@@ -11,17 +11,19 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class SignpostHandler {
 
+    public static final String MODID = "signpost";
+
     @SubscribeEvent
-    @Optional.Method(modid = "signpost")
+    @Optional.Method(modid = MODID)
     public void onUpdateWaystoneEvent(UpdateWaystoneEvent event) {
         BlockPos pos = new BlockPos(event.x, event.y, event.z);
         switch (event.type) {
             case PLACED:
-                AtlasHandler.addMarker(event.world, pos, event.name, true, false);
+                AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
                 break;
             case NAMECHANGED:
                 AtlasHandler.removeMarker(event.world, pos);
-                AtlasHandler.addMarker(event.world, pos, event.name, true, false);
+                AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
                 break;
             case DESTROYED:
                 AtlasHandler.removeMarker(event.world, pos);
@@ -33,7 +35,7 @@ public class SignpostHandler {
     @Optional.Method(modid = "signpost")
     public void onSignpostPlaced(BlockEvent.PlaceEvent event) {
         if(event.getPlacedBlock().getBlock() instanceof SuperPostPost){
-            AtlasHandler.addMarker(event.getWorld(), event.getPos(), I18n.format("atlasextras.marker.signpost"), false, true);
+            AtlasHandler.addMarker(event.getWorld(), event.getPos(), I18n.format("atlasextras.marker.signpost"), false, true, MODID);
         }
     }
 

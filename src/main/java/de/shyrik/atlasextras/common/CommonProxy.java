@@ -2,7 +2,9 @@ package de.shyrik.atlasextras.common;
 
 import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.Configuration;
+import de.shyrik.atlasextras.compat.AtlasExtrasCostHandler;
 import de.shyrik.atlasextras.compat.SignpostHandler;
+import de.shyrik.atlasextras.compat.TravelHandler;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -19,6 +21,7 @@ public class CommonProxy {
     public static final ResourceLocation MARKER_WAYSTONE = new ResourceLocation(AtlasExtras.MODID, "waystone");
 
     public void preInit(FMLPreInitializationEvent event) {
+        TravelHandler.registerCostHandler(AtlasExtras.MODID, new AtlasExtrasCostHandler());
         NetworkHelper.registerPackets();
 
         if (Loader.isModLoaded("signpost") && Configuration.COMPAT.compatSignpost) {

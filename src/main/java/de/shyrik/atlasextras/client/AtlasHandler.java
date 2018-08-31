@@ -18,10 +18,10 @@ public class AtlasHandler {
         NetworkHelper.sendToServer(new MarkerClickPacket(event.marker.getId(), event.player));
     }
 
-    public static void addMarker(World world, BlockPos pos, String name, boolean canJumpTo, boolean canJumpFrom) {
+    public static void addMarker(World world, BlockPos pos, String name, boolean canJumpTo, boolean canJumpFrom, String modid) {
         ResourceLocation markerType = canJumpTo ? CommonProxy.MARKER_WAYSTONE : CommonProxy.MARKER_SIGNPOST;
         int id = AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, markerType.toString() , name, pos.getX(), pos.getZ());
-        MarkerMap.instance(world).put(id, pos, canJumpTo, canJumpFrom);
+        MarkerMap.instance(world).put(id, pos, canJumpTo, canJumpFrom, modid);
     }
 
     public static void removeMarker(World world, BlockPos pos) {

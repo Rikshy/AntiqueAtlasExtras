@@ -34,8 +34,8 @@ public class MarkerMap extends WorldSavedData {
     }
 
 
-    public void put(int id, BlockPos pos, boolean canJumpTo, boolean canJumpFrom) {
-        marks.put(id, new Mark(id, pos, canJumpTo, canJumpFrom));
+    public void put(int id, BlockPos pos, boolean canJumpTo, boolean canJumpFrom, String modid) {
+        marks.put(id, new Mark(id, pos, canJumpTo, canJumpFrom, modid));
         markDirty();
     }
 
@@ -72,13 +72,13 @@ public class MarkerMap extends WorldSavedData {
         for (int i = 0; i < nbtList.tagCount(); i++) {
             NBTTagCompound tag = nbtList.getCompoundTagAt(i);
             int id = tag.getInteger("id");
-            int x = tag.getInteger("x");
-            int y = tag.getInteger("y");
-            int z = tag.getInteger("z");
-            boolean jt = tag.getBoolean("jumpto");
-            boolean jf = tag.getBoolean("jumpfrom");
 
-            marks.put(id, new Mark(id, new BlockPos(x, y, z), jt, jf));
+            marks.put(id, new Mark(
+                    id,
+                    new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")),
+                    tag.getBoolean("jumpto"), tag.getBoolean("jumpfrom"),
+                    tag.getString("modid")
+            ));
         }
     }
 
@@ -96,6 +96,7 @@ public class MarkerMap extends WorldSavedData {
             nbt.setInteger("z", mark.pos.getZ());
             nbt.setBoolean("jumpto", mark.canJumpTo);
             nbt.setBoolean("jumpfrom", mark.canJumpFrom);
+            nbt.setString("modid", mark.modid);
 
             nbtList.appendTag(nbt);
         }
@@ -108,12 +109,14 @@ public class MarkerMap extends WorldSavedData {
         public BlockPos pos;
         public boolean canJumpTo;
         public boolean canJumpFrom;
+        public String modid;
 
-        public Mark(int id, BlockPos pos, boolean canJumpTo, boolean canJumpFrom) {
+        public Mark(int id, BlockPos pos, boolean canJumpTo, boolean canJumpFrom, String modid) {
             this.id = id;
             this.pos = pos;
             this.canJumpTo = canJumpTo;
             this.canJumpFrom = canJumpFrom;
+            this.modid = modid;
         }
     }
 }
