@@ -1,6 +1,6 @@
 package de.shyrik.atlasextras;
 
-import de.shyrik.atlasextras.common.CommonProxy;
+import de.shyrik.atlasextras.core.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -17,8 +17,8 @@ public class AtlasExtras
     public static final String VERSION = "@version@";
     public static final String DEPENDENCY = "required-after:antiqueatlas;after:signpost;";
 
-    public static final String CLIENT_PROXY = "de.shyrik.atlasextras.client.ClientProxy";
-    public static final String SERVER_PROXY = "de.shyrik.atlasextras.common.CommonProxy";
+    public static final String CLIENT_PROXY = "de.shyrik.atlasextras.core.ClientProxy";
+    public static final String SERVER_PROXY = "de.shyrik.atlasextras.core.CommonProxy";
 
     public static final String CHANNEL = "atlasextras";
 

@@ -1,7 +1,7 @@
 package de.shyrik.atlasextras.network;
 
 import de.shyrik.atlasextras.AtlasExtras;
-import de.shyrik.atlasextras.compat.TravelHandler;
+import de.shyrik.atlasextras.features.travel.TravelHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;

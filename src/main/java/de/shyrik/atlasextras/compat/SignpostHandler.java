@@ -1,6 +1,6 @@
 package de.shyrik.atlasextras.compat;
 
-import de.shyrik.atlasextras.client.AtlasHandler;
+import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import gollorum.signpost.blocks.SuperPostPost;
 import gollorum.signpost.event.UpdateWaystoneEvent;
 import net.minecraft.client.resources.I18n;
