@@ -8,6 +8,7 @@ import gollorum.signpost.management.PostHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Optional;
@@ -57,8 +58,12 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
     }
 
     @Override
-    public boolean canPay(EntityPlayer player, BlockPos destination) {
-        return PostHandler.canPay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ());
+    public boolean canTravel(EntityPlayer player, BlockPos destination) {
+        if(!PostHandler.canPay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ())) {
+            player.sendMessage(new TextComponentTranslation("atlasextras.message.toodayumexpensive"));
+            return false;
+        }
+        return true;
     }
 
     @Override

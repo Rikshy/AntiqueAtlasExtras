@@ -4,6 +4,7 @@ import de.shyrik.atlasextras.core.Configuration;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class AtlasExtrasCostHandler implements TravelHandler.ICostHandler {
 
@@ -30,8 +31,9 @@ public class AtlasExtrasCostHandler implements TravelHandler.ICostHandler {
     }
 
     @Override
-    public boolean canPay(EntityPlayer player, BlockPos destination) {
+    public boolean canTravel(EntityPlayer player, BlockPos destination) {
         double distance = player.getPosition().getDistance(destination.getX(), destination.getY(), destination.getZ());
+        String messsageKey = "atlasextras.message.toofaraway";
         if (Configuration.COSTPROVIDER.maxTravelDistance <= distance) {
             switch (Configuration.COSTPROVIDER.costUnit) {
                 case HUNGER:
@@ -40,6 +42,7 @@ public class AtlasExtrasCostHandler implements TravelHandler.ICostHandler {
                         player.getFoodStats().addStats(-1 * hungerCost, 0F);
                         return true;
                     }
+                    messsageKey = "atlasextras.message.todayumexpensive";
                     break;
                 case XP:
                     int xpCost = Configuration.COSTPROVIDER.blocksPerUnit == 0 ? Configuration.COSTPROVIDER.xpAmount : (int) (distance / Configuration.COSTPROVIDER.blocksPerUnit);
@@ -47,6 +50,7 @@ public class AtlasExtrasCostHandler implements TravelHandler.ICostHandler {
                         player.addExperience(xpCost * -1);
                         return true;
                     }
+                    messsageKey = "atlasextras.message.todayumexpensive";
                     break;
                 case ITEM:
                     int itemCost = Configuration.COSTPROVIDER.blocksPerUnit == 0 ? 1 : (int) (distance / Configuration.COSTPROVIDER.blocksPerUnit);
@@ -61,11 +65,13 @@ public class AtlasExtrasCostHandler implements TravelHandler.ICostHandler {
                         player.inventory.clearMatchingItems(goaway.getItem(), goaway.getMetadata(), playerItemCount, null);
                         return true;
                     }
+                    messsageKey = "atlasextras.message.todayumexpensive";
                     break;
                 case NOTHING:
                     return true;
             }
         }
+        player.sendMessage(new TextComponentTranslation(messsageKey));
         return false;
     }
 }

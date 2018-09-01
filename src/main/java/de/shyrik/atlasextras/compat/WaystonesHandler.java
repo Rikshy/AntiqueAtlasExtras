@@ -17,6 +17,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -45,14 +46,17 @@ public class WaystonesHandler implements TravelHandler.ICostHandler, IMessageHan
     }
 
     @Override
-    public boolean canPay(EntityPlayer player, BlockPos destination) {
+    public boolean canTravel(EntityPlayer player, BlockPos destination) {
         int dist = (int) Math.sqrt(player.getDistanceSqToCenter(destination));
         int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
 
-        if (!PlayerWaystoneHelper.canUseWarpStone(player))
+        if (!PlayerWaystoneHelper.canUseWarpStone(player)) {
+            player.sendMessage(new TextComponentTranslation("atlasextras.message.cooldown"));
             return false;
+        }
 
         if (WaystoneConfig.general.inventoryButtonXpCost && player.experienceLevel < xpLevelCost && !PlayerWaystoneHelper.canFreeWarp(player)) {
+            player.sendMessage(new TextComponentTranslation("atlasextras.message.toodayumexpensive"));
             return false;
         }
 
@@ -62,6 +66,7 @@ public class WaystonesHandler implements TravelHandler.ICostHandler, IMessageHan
             }
         }
 
+        player.sendMessage(new TextComponentTranslation("atlasextras.message.waypointnotknown"));
         return false;
     }
 

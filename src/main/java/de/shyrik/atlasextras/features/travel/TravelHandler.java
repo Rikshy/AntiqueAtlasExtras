@@ -22,7 +22,7 @@ public class TravelHandler {
     public interface ICostHandler {
         void pay(EntityPlayer player, BlockPos destination);
 
-        boolean canPay(EntityPlayer player, BlockPos destination);
+        boolean canTravel(EntityPlayer player, BlockPos destination);
     }
 
     public static void registerCostHandler(String modid, ICostHandler handler) {
@@ -102,7 +102,7 @@ public class TravelHandler {
 
     private static boolean canPay(String modid, EntityPlayer player, BlockPos destination) {
         if (!handlers.containsKey(modid) || Configuration.COSTPROVIDER.useOwnCostProvider)
-            return handlers.get(AtlasExtras.MODID).canPay(player, destination);
-        return handlers.get(modid).canPay(player, destination);
+            return handlers.get(AtlasExtras.MODID).canTravel(player, destination);
+        return handlers.get(modid).canTravel(player, destination);
     }
 }
