@@ -32,8 +32,9 @@ public class ClientProxy extends CommonProxy {
     public void init(FMLInitializationEvent event) {
         super.init(event);
         List<MarkerType> list = Stream.of(
-                new MarkerType(MARKER_SIGNPOST, new ResourceLocation(AtlasExtras.MODID, "textures/markers/signpost.png")),
-                new MarkerType(MARKER_WAYSTONE, new ResourceLocation(AtlasExtras.MODID, "textures/markers/waystone.png"))
+                new MarkerType(MARKER_TRAVELFROM, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelfrom.png")),
+                new MarkerType(MARKER_TRAVELTO, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelto.png")),
+                new MarkerType(MARKER_TRAVEL, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travel.png"))
         ).collect(Collectors.toList());
 
         for (MarkerType mt : list)
@@ -43,7 +44,8 @@ public class ClientProxy extends CommonProxy {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void registerTex(TextureStitchEvent.Pre event) {
-        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/signpost"));
-        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/waystone"));
+        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/travelfrom"));
+        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/travelto"));
+        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/travel"));
     }
 }

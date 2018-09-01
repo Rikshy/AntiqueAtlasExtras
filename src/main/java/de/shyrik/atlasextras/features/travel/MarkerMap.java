@@ -14,7 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class MarkerMap extends WorldSavedData {
 
-    public static final String DATA_ID = AtlasExtras.MODID + ":atlasmarkermap";
+    private static final String DATA_ID = AtlasExtras.MODID + ":atlasmarkermap";
+    private static final String NBT_ID = "id";
+    private static final String NBT_X = "x";
+    private static final String NBT_Y = "y";
+    private static final String NBT_Z = "z";
+    private static final String NBT_TRAVELTO = "travelto";
+    private static final String NBT_TRAVELFROM = "travelfrom";
+    private static final String NBT_SOURCEMOD = "sourcemod";
     private Map<Integer, Mark> marks = new ConcurrentHashMap<>();
 
     public MarkerMap() {
@@ -63,8 +70,7 @@ public class MarkerMap extends WorldSavedData {
 
     public boolean hasJumpNearby(@Nonnull BlockPos pos) {
         for (Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            if (entry.getValue().canJumpFrom
-                    && entry.getValue().pos.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
+            if (entry.getValue().canTravelFrom && entry.getValue().pos.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
                 return true;
         }
         return false;
@@ -75,12 +81,12 @@ public class MarkerMap extends WorldSavedData {
         NBTTagList nbtList = nbt.getTagList("marks", 10);
         for (int i = 0; i < nbtList.tagCount(); i++) {
             NBTTagCompound tag = nbtList.getCompoundTagAt(i);
-            int id = tag.getInteger("id");
+            int id = tag.getInteger(NBT_ID);
 
             marks.put(id, new Mark(id,
-                    new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")),
-                    tag.getBoolean("jumpto"), tag.getBoolean("jumpfrom"),
-                    tag.getString("modid")));
+                    new BlockPos(tag.getInteger(NBT_X), tag.getInteger(NBT_Y), tag.getInteger(NBT_Z)),
+                    tag.getBoolean(NBT_TRAVELTO), tag.getBoolean(NBT_TRAVELFROM),
+                    tag.getString(NBT_SOURCEMOD)));
         }
     }
 
@@ -92,13 +98,13 @@ public class MarkerMap extends WorldSavedData {
             Mark mark = entry.getValue();
 
             NBTTagCompound nbt = new NBTTagCompound();
-            nbt.setInteger("id", mark.id);
-            nbt.setInteger("x", mark.pos.getX());
-            nbt.setInteger("y", mark.pos.getY());
-            nbt.setInteger("z", mark.pos.getZ());
-            nbt.setBoolean("jumpto", mark.canJumpTo);
-            nbt.setBoolean("jumpfrom", mark.canJumpFrom);
-            nbt.setString("modid", mark.modid);
+            nbt.setInteger(NBT_ID, mark.id);
+            nbt.setInteger(NBT_X, mark.pos.getX());
+            nbt.setInteger(NBT_Y, mark.pos.getY());
+            nbt.setInteger(NBT_Z, mark.pos.getZ());
+            nbt.setBoolean(NBT_TRAVELTO, mark.canTravelTo);
+            nbt.setBoolean(NBT_TRAVELFROM, mark.canTravelFrom);
+            nbt.setString(NBT_SOURCEMOD, mark.sourceMod);
 
             nbtList.appendTag(nbt);
         }
@@ -109,16 +115,16 @@ public class MarkerMap extends WorldSavedData {
     public class Mark {
         public int id;
         public BlockPos pos;
-        public boolean canJumpTo;
-        public boolean canJumpFrom;
-        public String modid;
+        public boolean canTravelTo;
+        public boolean canTravelFrom;
+        public String sourceMod;
 
-        public Mark(int id, BlockPos pos, boolean canJumpTo, boolean canJumpFrom, String modid) {
+        public Mark(int id, BlockPos pos, boolean canTravelTo, boolean canTravelFrom, String sourceMod) {
             this.id = id;
             this.pos = pos;
-            this.canJumpTo = canJumpTo;
-            this.canJumpFrom = canJumpFrom;
-            this.modid = modid;
+            this.canTravelTo = canTravelTo;
+            this.canTravelFrom = canTravelFrom;
+            this.sourceMod = sourceMod;
         }
     }
 }

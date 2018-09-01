@@ -20,8 +20,9 @@ import net.minecraftforge.fml.relauncher.Side;
 
 public class CommonProxy {
 
-    public static final ResourceLocation MARKER_SIGNPOST = new ResourceLocation(AtlasExtras.MODID, "signpost");
-    public static final ResourceLocation MARKER_WAYSTONE = new ResourceLocation(AtlasExtras.MODID, "waystone");
+    public static final ResourceLocation MARKER_TRAVELFROM = new ResourceLocation(AtlasExtras.MODID, "travelfrom");
+    public static final ResourceLocation MARKER_TRAVELTO = new ResourceLocation(AtlasExtras.MODID, "travelto");
+    public static final ResourceLocation MARKER_TRAVEL = new ResourceLocation(AtlasExtras.MODID, "travel");
 
     public void preInit(FMLPreInitializationEvent event) {
         TravelHandler.registerCostHandler(AtlasExtras.MODID, new AtlasExtrasCostHandler());
