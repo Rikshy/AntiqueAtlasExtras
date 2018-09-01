@@ -8,6 +8,7 @@ import gollorum.signpost.management.PostHandler;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -37,7 +38,13 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
     @Optional.Method(modid = MODID)
     public void onSignpostPlaced(BlockEvent.PlaceEvent event) {
         if (event.getPlacedBlock().getBlock() instanceof SuperPostPost) {
-            AtlasHandler.addMarker(event.getWorld(), event.getPos(), I18n.format("atlasextras.marker.signpost"), false, true, MODID);
+            World world = event.getWorld();
+            BlockPos pos = event.getPos();
+            if (world.getBlockState(pos.up()).getBlock() instanceof SuperPostPost )
+                AtlasHandler.removeMarker(world, pos.up());
+            //No need for upstacking markers on one spot
+            if (!(world.getBlockState(pos.down()).getBlock() instanceof SuperPostPost))
+                AtlasHandler.addMarker(world, pos, I18n.format("atlasextras.marker.signpost"), false, true, MODID);
         }
     }
 
