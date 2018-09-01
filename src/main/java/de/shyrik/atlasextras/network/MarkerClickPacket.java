@@ -12,7 +12,8 @@ import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class MarkerClickPacket implements IMessage, IMessageHandler<MarkerClickPacket, IMessage> {
 
-    public MarkerClickPacket() {}
+    public MarkerClickPacket() {
+    }
 
     public MarkerClickPacket(int markderId, EntityPlayer player) {
         this.markderId = markderId;

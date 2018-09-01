@@ -20,6 +20,7 @@ public class TravelHandler {
 
     public interface ICostHandler {
         void pay(EntityPlayer player, BlockPos destination);
+
         boolean canPay(EntityPlayer player, BlockPos destination);
     }
 
@@ -35,7 +36,7 @@ public class TravelHandler {
             EntityPlayer player = world.getPlayerEntityByUUID(UUID.fromString(playerUUID));
             if (player != null && map.hasJumpNearby(player.getPosition())) {
                 if (player.isCreative() || canPay(mark.modid, player, mark.pos)) {
-                    if(tryTravel(world, player, mark.pos)) pay(mark.modid, player, mark.pos);
+                    if (tryTravel(world, player, mark.pos)) pay(mark.modid, player, mark.pos);
                     else player.sendMessage(new TextComponentTranslation("atlasextras.message.blocked"));
                 }
             }

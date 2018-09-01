@@ -25,8 +25,7 @@ public class ClientProxy extends CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
 
-        if(Configuration.COMPAT.enableFastTravel)
-            MinecraftForge.EVENT_BUS.register(new AtlasHandler());
+        if (Configuration.COMPAT.enableFastTravel) MinecraftForge.EVENT_BUS.register(new AtlasHandler());
     }
 
     @Override

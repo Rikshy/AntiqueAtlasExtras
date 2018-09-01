@@ -36,15 +36,15 @@ public class OverlayHandler {
             int gameHeight = event.getResolution().getScaledHeight();
 
             int row = 0;
-            if(Configuration.GENERAL.enablePositionInfo) {
+            if (Configuration.GENERAL.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos);
             }
-            if(Configuration.GENERAL.enableBiomeInfo) {
+            if (Configuration.GENERAL.enableBiomeInfo) {
                 String infoBiome = mc.world.getBiome(pos).getBiomeName();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoBiome);
             }
-            if(Configuration.GENERAL.enableTimeInfo) {
+            if (Configuration.GENERAL.enableTimeInfo) {
                 MCDateTime dt = new MCDateTime(mc.world.getWorldTime());
 
                 String infoTime = String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min);

@@ -40,7 +40,7 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
         if (event.getPlacedBlock().getBlock() instanceof SuperPostPost) {
             World world = event.getWorld();
             BlockPos pos = event.getPos();
-            if (world.getBlockState(pos.up()).getBlock() instanceof SuperPostPost )
+            if (world.getBlockState(pos.up()).getBlock() instanceof SuperPostPost)
                 AtlasHandler.removeMarker(world, pos.up());
             //No need for upstacking markers on one spot
             if (!(world.getBlockState(pos.down()).getBlock() instanceof SuperPostPost))

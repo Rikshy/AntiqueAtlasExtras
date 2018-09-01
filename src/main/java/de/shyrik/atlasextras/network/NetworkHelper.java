@@ -19,7 +19,7 @@ public class NetworkHelper {
     private static int packetId = 0;
 
     /**
-     *  Registers all packets and handlers - call this during {@link FMLPreInitializationEvent}
+     * Registers all packets and handlers - call this during {@link FMLPreInitializationEvent}
      */
     public static void registerPackets() {
         dispatcher.registerMessage(MarkerClickPacket.class, MarkerClickPacket.class, packetId++, Side.SERVER);
@@ -42,9 +42,11 @@ public class NetworkHelper {
     public static void sendToAll(IMessage message) {
         dispatcher.sendToAll(message);
     }
+
     public static void sendToServer(IMessage message) {
         dispatcher.sendToServer(message);
     }
+
     public static void sendAround(IMessage message, BlockPos pos, int dimId) {
         dispatcher.sendToAllAround(message, new NetworkRegistry.TargetPoint(dimId, pos.getX(), pos.getY(), pos.getZ(), 64));
     }

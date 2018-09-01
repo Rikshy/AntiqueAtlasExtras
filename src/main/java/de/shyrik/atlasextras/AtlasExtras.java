@@ -10,8 +10,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
 
 @Mod(modid = AtlasExtras.MODID, name = AtlasExtras.NAME, version = AtlasExtras.VERSION, dependencies = AtlasExtras.DEPENDENCY)
-public class AtlasExtras
-{
+public class AtlasExtras {
     public static final String MODID = "atlasextras";
     public static final String NAME = "Atlas Extras";
     public static final String VERSION = "@version@";

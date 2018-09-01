@@ -15,7 +15,8 @@ public class TravelEffectPacket implements IMessage, IMessageHandler<TravelEffec
 
     private BlockPos pos;
 
-    public TravelEffectPacket() {}
+    public TravelEffectPacket() {
+    }
 
     public TravelEffectPacket(BlockPos pos) {
         this.pos = pos;

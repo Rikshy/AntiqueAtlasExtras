@@ -98,14 +98,11 @@ public class Configuration {
 
     private static ItemStack parseCfgItem(String s) {
         String[] split = s.split(":");
-        if(split.length < 2 || split.length > 3)
-            return ItemStack.EMPTY;
+        if (split.length < 2 || split.length > 3) return ItemStack.EMPTY;
         else {
             Item tmp = Item.getByNameOrId(new ResourceLocation(split[0], split[1]).toString());
-            if (tmp == null)
-                return ItemStack.EMPTY;
-            if (split.length == 2)
-                return new ItemStack(tmp);
+            if (tmp == null) return ItemStack.EMPTY;
+            if (split.length == 2) return new ItemStack(tmp);
             return new ItemStack(tmp, Integer.getInteger(split[2]));
         }
     }

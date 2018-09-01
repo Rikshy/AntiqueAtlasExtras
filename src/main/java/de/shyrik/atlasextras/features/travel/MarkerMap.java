@@ -26,8 +26,8 @@ public class MarkerMap extends WorldSavedData {
     }
 
     public static MarkerMap instance(@Nonnull World world) {
-        MarkerMap map = (MarkerMap)world.getPerWorldStorage().getOrLoadData(MarkerMap.class, DATA_ID);
-        if(map == null) {
+        MarkerMap map = (MarkerMap) world.getPerWorldStorage().getOrLoadData(MarkerMap.class, DATA_ID);
+        if (map == null) {
             map = new MarkerMap();
             world.getPerWorldStorage().setData(DATA_ID, map);
         }
@@ -46,15 +46,13 @@ public class MarkerMap extends WorldSavedData {
     }
 
     public Mark get(int id) {
-        if(marks.containsKey(id))
-            return marks.get(id);
+        if (marks.containsKey(id)) return marks.get(id);
         return null;
     }
 
     public Mark getFromPos(@Nonnull BlockPos pos) {
-        for(Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            if(entry.getValue().pos.toLong() == pos.toLong())
-                return entry.getValue();
+        for (Map.Entry<Integer, Mark> entry : marks.entrySet()) {
+            if (entry.getValue().pos.toLong() == pos.toLong()) return entry.getValue();
         }
         return null;
     }
@@ -64,8 +62,9 @@ public class MarkerMap extends WorldSavedData {
     }
 
     public boolean hasJumpNearby(@Nonnull BlockPos pos) {
-        for(Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            if(entry.getValue().canJumpFrom && entry.getValue().pos .getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
+        for (Map.Entry<Integer, Mark> entry : marks.entrySet()) {
+            if (entry.getValue().canJumpFrom
+                    && entry.getValue().pos.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
                 return true;
         }
         return false;
@@ -78,12 +77,10 @@ public class MarkerMap extends WorldSavedData {
             NBTTagCompound tag = nbtList.getCompoundTagAt(i);
             int id = tag.getInteger("id");
 
-            marks.put(id, new Mark(
-                    id,
+            marks.put(id, new Mark(id,
                     new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z")),
                     tag.getBoolean("jumpto"), tag.getBoolean("jumpfrom"),
-                    tag.getString("modid")
-            ));
+                    tag.getString("modid")));
         }
     }
 
