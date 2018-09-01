@@ -1,6 +1,7 @@
 package de.shyrik.atlasextras.features.travel;
 
 import de.shyrik.atlasextras.AtlasExtras;
+import de.shyrik.atlasextras.core.Configuration;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.math.BlockPos;
@@ -64,7 +65,7 @@ public class MarkerMap extends WorldSavedData {
 
     public boolean hasJumpNearby(@Nonnull BlockPos pos) {
         for(Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            if(entry.getValue().canJumpFrom && entry.getValue().pos .getDistance(pos.getX(), pos.getY(), pos.getZ()) <= 5)
+            if(entry.getValue().canJumpFrom && entry.getValue().pos .getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
                 return true;
         }
         return false;

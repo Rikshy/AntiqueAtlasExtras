@@ -45,6 +45,10 @@ public class Configuration {
 
         @Config.Comment("true to add waystones markers, false otherwise")
         public boolean compatWaystone = true;
+
+        @Config.Comment("The maximum amount of blocks the player can be away of a sign to travel")
+        @Config.RangeInt(min = 1, max = 32)
+        public int distanceToMarker = 5;
     }
 
     public static class CostProvider {
@@ -52,15 +56,18 @@ public class Configuration {
         public boolean useOwnCostProvider = true;
 
         @Config.Comment("Amount of blocks the player can travel (0 limetless - price is the limit)")
+        @Config.RangeInt(min = 0, max = 10000000)
         public int maxTravelDistance = 0;
 
         @Config.Comment("Unit in which travel is to pay")
         public CostUnit costUnit = CostUnit.HUNGER;
 
         @Config.Comment("Amount of blocks the player can travel per cost Unit (0 = just 1 unit needs to be payed)")
+        @Config.RangeInt(min = 0, max = 10000000)
         public int blocksPerUnit = 0;
 
         @Config.Comment("If costUnit is XP - how much xp should be drained per use")
+        @Config.RangeInt(min = 0, max = 10000000)
         public int xpAmount = 50;
 
         @Config.Comment("If costUnit is ITEM - which item is needed as pay (modid:itemname:meta)")
