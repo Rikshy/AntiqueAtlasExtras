@@ -25,7 +25,6 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
                 AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
                 break;
             case NAMECHANGED:
-                AtlasHandler.removeMarker(event.world, pos);
                 AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
                 break;
             case DESTROYED:
@@ -35,7 +34,7 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = "signpost")
+    @Optional.Method(modid = MODID)
     public void onSignpostPlaced(BlockEvent.PlaceEvent event) {
         if (event.getPlacedBlock().getBlock() instanceof SuperPostPost) {
             AtlasHandler.addMarker(event.getWorld(), event.getPos(), I18n.format("atlasextras.marker.signpost"), false, true, MODID);
@@ -43,7 +42,7 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
     }
 
     @SubscribeEvent
-    @Optional.Method(modid = "signpost")
+    @Optional.Method(modid = MODID)
     public void onSignpostBroken(BlockEvent.BreakEvent event) {
         if (event.getState().getBlock() instanceof SuperPostPost) {
             AtlasHandler.removeMarker(event.getWorld(), event.getPos());
@@ -51,7 +50,12 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
     }
 
     @Override
-    public boolean tryPay(EntityPlayer player, BlockPos destination) {
-        return PostHandler.pay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ());
+    public boolean canPay(EntityPlayer player, BlockPos destination) {
+        return PostHandler.canPay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ());
+    }
+
+    @Override
+    public void pay(EntityPlayer player, BlockPos destination) {
+        PostHandler.doPay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ());
     }
 }

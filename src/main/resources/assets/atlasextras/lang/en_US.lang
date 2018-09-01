@@ -7,3 +7,6 @@ atlasextras.datetime.day.saturday=Saturday
 atlasextras.datetime.day.sunday=Sunday
 
 atlasextras.marker.signpost=Signpost
+atlasextras.marker.waystone=Waystone
+
+atlasextras.message.blocked=Target blocked

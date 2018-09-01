@@ -15,7 +15,7 @@ public class AtlasExtras
     public static final String MODID = "atlasextras";
     public static final String NAME = "Atlas Extras";
     public static final String VERSION = "@version@";
-    public static final String DEPENDENCY = "required-after:antiqueatlas;after:signpost;";
+    public static final String DEPENDENCY = "required-after:antiqueatlas;after:signpost;after:waystones";
 
     public static final String CLIENT_PROXY = "de.shyrik.atlasextras.core.ClientProxy";
     public static final String SERVER_PROXY = "de.shyrik.atlasextras.core.CommonProxy";

@@ -19,8 +19,14 @@ public class AtlasHandler {
 
     public static void addMarker(World world, BlockPos pos, String name, boolean canJumpTo, boolean canJumpFrom, String modid) {
         ResourceLocation markerType = canJumpTo ? CommonProxy.MARKER_WAYSTONE : CommonProxy.MARKER_SIGNPOST;
+        MarkerMap map = MarkerMap.instance(world);
+        MarkerMap.Mark mark = map.getFromPos(pos);
+        if(mark != null) {
+            AtlasAPI.getMarkerAPI().deleteGlobalMarker(world, mark.id);
+            map.remove(mark.id);
+        }
         int id = AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, markerType.toString() , name, pos.getX(), pos.getZ());
-        MarkerMap.instance(world).put(id, pos, canJumpTo, canJumpFrom, modid);
+        map.put(id, pos, canJumpTo, canJumpFrom, modid);
     }
 
     public static void removeMarker(World world, BlockPos pos) {

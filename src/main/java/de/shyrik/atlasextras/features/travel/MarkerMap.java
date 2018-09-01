@@ -58,6 +58,10 @@ public class MarkerMap extends WorldSavedData {
         return null;
     }
 
+    public boolean hasOnPos(@Nonnull BlockPos pos) {
+        return getFromPos(pos) != null;
+    }
+
     public boolean hasJumpNearby(@Nonnull BlockPos pos) {
         for(Map.Entry<Integer, Mark> entry : marks.entrySet()) {
             if(entry.getValue().canJumpFrom && entry.getValue().pos .getDistance(pos.getX(), pos.getY(), pos.getZ()) <= 5)

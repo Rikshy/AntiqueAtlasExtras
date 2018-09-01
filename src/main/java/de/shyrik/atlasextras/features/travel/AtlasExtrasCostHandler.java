@@ -8,7 +8,29 @@ import net.minecraft.util.math.BlockPos;
 public class AtlasExtrasCostHandler implements TravelHandler.ICostHandler {
 
     @Override
-    public boolean tryPay(EntityPlayer player, BlockPos destination) {
+    public void pay(EntityPlayer player, BlockPos destination) {
+        double distance = player.getPosition().getDistance(destination.getX(), destination.getY(), destination.getZ());
+        switch (Configuration.COSTPROVIDER.costUnit) {
+            case HUNGER:
+                int hungerCost = Configuration.COSTPROVIDER.blocksPerUnit == 0 ? 1 : (int) (distance / Configuration.COSTPROVIDER.blocksPerUnit);
+                player.getFoodStats().addStats(-1 * hungerCost, 0F);
+                break;
+            case XP:
+                int xpCost = Configuration.COSTPROVIDER.blocksPerUnit == 0 ? Configuration.COSTPROVIDER.xpAmount : (int) (distance / Configuration.COSTPROVIDER.blocksPerUnit);
+                player.addExperience(xpCost * -1);
+                break;
+            case ITEM:
+                int itemCost = Configuration.COSTPROVIDER.blocksPerUnit == 0 ? 1 : (int) (distance / Configuration.COSTPROVIDER.blocksPerUnit);
+                ItemStack goaway = Configuration.COSTPROVIDER.itemCost;
+                player.inventory.clearMatchingItems(goaway.getItem(), goaway.getMetadata(), itemCost, null);
+                break;
+            case NOTHING:
+                break;
+        }
+    }
+
+    @Override
+    public boolean canPay(EntityPlayer player, BlockPos destination) {
         double distance = player.getPosition().getDistance(destination.getX(), destination.getY(), destination.getZ());
         if (Configuration.COSTPROVIDER.maxTravelDistance <= distance) {
             switch (Configuration.COSTPROVIDER.costUnit) {
