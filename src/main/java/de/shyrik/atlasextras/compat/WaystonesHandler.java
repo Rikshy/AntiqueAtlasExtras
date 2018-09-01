@@ -4,12 +4,14 @@ import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
 import net.blay09.mods.waystones.GlobalWaystones;
+import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.block.BlockWaystone;
 import net.blay09.mods.waystones.block.TileWaystone;
 import net.blay09.mods.waystones.network.NetworkHandler;
 import net.blay09.mods.waystones.network.message.MessageEditWaystone;
+import net.blay09.mods.waystones.util.WaystoneEntry;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
@@ -39,23 +41,28 @@ public class WaystonesHandler implements TravelHandler.ICostHandler, IMessageHan
         int dist = (int) Math.sqrt(player.getDistanceSqToCenter(destination));
         int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
         player.addExperienceLevel(-xpLevelCost);
+        PlayerWaystoneHelper.setLastWarpStoneUse(player, System.currentTimeMillis());
     }
 
     @Override
     public boolean canPay(EntityPlayer player, BlockPos destination) {
         int dist = (int) Math.sqrt(player.getDistanceSqToCenter(destination));
         int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
-        if (!WaystoneConfig.general.teleportButton || WaystoneConfig.general.teleportButtonReturnOnly) {
+
+        if (!PlayerWaystoneHelper.canUseWarpStone(player))
+            return false;
+
+        if (WaystoneConfig.general.inventoryButtonXpCost && player.experienceLevel < xpLevelCost && !PlayerWaystoneHelper.canFreeWarp(player)) {
             return false;
         }
 
-        if (WaystoneConfig.general.inventoryButtonXpCost && player.experienceLevel < xpLevelCost) {
-            return false;
+        for (WaystoneEntry entry : PlayerWaystoneData.fromPlayer(player).getWaystones()) {
+            if (entry.getPos().toLong() == destination.toLong()) {
+                return true;
+            }
         }
-        if (!PlayerWaystoneHelper.canFreeWarp(player)) {
-            return false;
-        }
-        return true;
+
+        return false;
     }
 
     @Override
