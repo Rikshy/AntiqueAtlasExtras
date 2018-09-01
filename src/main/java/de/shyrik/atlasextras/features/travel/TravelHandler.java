@@ -1,6 +1,7 @@
 package de.shyrik.atlasextras.features.travel;
 
 import de.shyrik.atlasextras.AtlasExtras;
+import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import de.shyrik.atlasextras.network.TravelEffectPacket;
 import net.minecraft.block.BlockHorizontal;
@@ -94,12 +95,14 @@ public class TravelHandler {
     }
 
     private static void pay(String modid, EntityPlayer player, BlockPos destination) {
-        if (!handlers.containsKey(modid)) handlers.get(AtlasExtras.MODID).pay(player, destination);
+        if (!handlers.containsKey(modid) || Configuration.COSTPROVIDER.useOwnCostProvider)
+            handlers.get(AtlasExtras.MODID).pay(player, destination);
         else handlers.get(modid).pay(player, destination);
     }
 
     private static boolean canPay(String modid, EntityPlayer player, BlockPos destination) {
-        if (!handlers.containsKey(modid)) return handlers.get(AtlasExtras.MODID).canPay(player, destination);
+        if (!handlers.containsKey(modid) || Configuration.COSTPROVIDER.useOwnCostProvider)
+            return handlers.get(AtlasExtras.MODID).canPay(player, destination);
         return handlers.get(modid).canPay(player, destination);
     }
 }
