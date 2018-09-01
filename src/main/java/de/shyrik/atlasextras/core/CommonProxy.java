@@ -24,7 +24,9 @@ public class CommonProxy {
         NetworkHelper.registerPackets();
 
         if (Loader.isModLoaded("signpost") && Configuration.COMPAT.compatSignpost) {
-            MinecraftForge.EVENT_BUS.register(new SignpostHandler());
+            SignpostHandler sph = new SignpostHandler();
+            MinecraftForge.EVENT_BUS.register(sph);
+            TravelHandler.registerCostHandler(SignpostHandler.MODID, sph);
         }
     }
 

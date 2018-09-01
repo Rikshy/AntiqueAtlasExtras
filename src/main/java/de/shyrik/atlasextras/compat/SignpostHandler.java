@@ -1,15 +1,18 @@
 package de.shyrik.atlasextras.compat;
 
 import de.shyrik.atlasextras.features.travel.AtlasHandler;
+import de.shyrik.atlasextras.features.travel.TravelHandler;
 import gollorum.signpost.blocks.SuperPostPost;
 import gollorum.signpost.event.UpdateWaystoneEvent;
+import gollorum.signpost.management.PostHandler;
 import net.minecraft.client.resources.I18n;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-public class SignpostHandler {
+public class SignpostHandler implements TravelHandler.ICostHandler {
 
     public static final String MODID = "signpost";
 
@@ -34,7 +37,7 @@ public class SignpostHandler {
     @SubscribeEvent
     @Optional.Method(modid = "signpost")
     public void onSignpostPlaced(BlockEvent.PlaceEvent event) {
-        if(event.getPlacedBlock().getBlock() instanceof SuperPostPost){
+        if (event.getPlacedBlock().getBlock() instanceof SuperPostPost) {
             AtlasHandler.addMarker(event.getWorld(), event.getPos(), I18n.format("atlasextras.marker.signpost"), false, true, MODID);
         }
     }
@@ -45,5 +48,10 @@ public class SignpostHandler {
         if (event.getState().getBlock() instanceof SuperPostPost) {
             AtlasHandler.removeMarker(event.getWorld(), event.getPos());
         }
+    }
+
+    @Override
+    public boolean tryPay(EntityPlayer player, BlockPos destination) {
+        return PostHandler.pay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ());
     }
 }
