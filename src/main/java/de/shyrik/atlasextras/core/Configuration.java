@@ -13,13 +13,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 @Config(modid = AtlasExtras.MODID, category = "")
 public class Configuration {
 
-    public static final General GENERAL = new General();
+    public static final HUD HUD = new HUD();
     public static final Compat COMPAT = new Compat();
 
     @Config.Comment("Category is obsolete if fasttravel is disabled")
     public static final CostProvider COSTPROVIDER = new CostProvider();
 
-    public static class General {
+    public static class HUD {
         @Config.Comment("true if the biome info should be shown, false otherwise")
         public boolean enableBiomeInfo = true;
 
@@ -107,7 +107,7 @@ public class Configuration {
         public static void onOnConfigChangedEvent(final ConfigChangedEvent.OnConfigChangedEvent event) {
             if (event.getModID().equals(AtlasExtras.MODID)) {
                 ConfigManager.sync(AtlasExtras.MODID, Config.Type.INSTANCE);
-                GENERAL.RGB = Integer.parseInt(GENERAL.color, 16);
+                HUD.RGB = Integer.parseInt(HUD.color, 16);
                 COSTPROVIDER.itemCost = parseCfgItem(COSTPROVIDER.item);
             }
         }

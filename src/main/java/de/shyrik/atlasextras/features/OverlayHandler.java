@@ -7,7 +7,6 @@ import hunternif.mc.atlas.SettingsConfig;
 import hunternif.mc.atlas.client.gui.GuiAtlas;
 import kenkron.antiqueatlasoverlay.AAOConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -35,7 +34,7 @@ public class OverlayHandler {
 
             BlockPos pos = mc.player.getPosition();
 
-            float scale = Configuration.GENERAL.textScale.scale;
+            float scale = Configuration.HUD.textScale.scale;
             float upscale = 1 / scale;
 
             GlStateManager.pushMatrix();
@@ -44,17 +43,17 @@ public class OverlayHandler {
             float gameWidth = (float)event.getResolution().getScaledWidth_double();
             float gameHeight = (float)event.getResolution().getScaledHeight_double();
             int row = 0;
-            if (Configuration.GENERAL.enablePositionInfo) {
+            if (Configuration.HUD.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
-                if (Configuration.GENERAL.nonVerbose)
+                if (Configuration.HUD.nonVerbose)
                     infoPos = pos.getX() + " | "  + pos.getY() + " | " + pos.getZ();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos, upscale);
             }
-            if (Configuration.GENERAL.enableBiomeInfo) {
+            if (Configuration.HUD.enableBiomeInfo) {
                 String infoBiome = mc.world.getBiome(pos).getBiomeName();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoBiome, upscale);
             }
-            if (Configuration.GENERAL.enableTimeInfo) {
+            if (Configuration.HUD.enableTimeInfo) {
                 MCDateTime dt = new MCDateTime(mc.world.getWorldTime());
 
                 String infoTime = String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min);
@@ -76,7 +75,7 @@ public class OverlayHandler {
         if (AAOConfig.position.alignBottom) atlasY = gameHeight - (atlasY + AAOConfig.position.height);
         float startY = (atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height) * scale);
 
-        mc.fontRenderer.drawString(info, startX, startY, Configuration.GENERAL.RGB, false);
+        mc.fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
     }
 
     private static Integer getPlayerAtlas(EntityPlayer player) {
