@@ -27,53 +27,71 @@ public class OverlayHandler {
         if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT && mc.world != null && !mc.gameSettings.showDebugInfo) {
 
             if (!AAOConfig.appearance.enabled) return;
-            // Overlay must close if Atlas GUI is opened
-            if (mc.currentScreen instanceof GuiAtlas) return;
             //Is minimap currently active
             if (getPlayerAtlas(mc.player) == null) return;
 
+            boolean openAtlas = mc.currentScreen instanceof GuiAtlas;
+
+            float gameWidth = (float) event.getResolution().getScaledWidth_double();
+            float gameHeight = (float) event.getResolution().getScaledHeight_double();
             BlockPos pos = mc.player.getPosition();
 
+            Configuration.InfoPosition renderPos = Configuration.HUD.displayPosition;
             float scale = Configuration.HUD.textScale.scale;
             float upscale = 1 / scale;
 
             GlStateManager.pushMatrix();
             GlStateManager.scale(scale, scale, scale);
-
-            float gameWidth = (float)event.getResolution().getScaledWidth_double();
-            float gameHeight = (float)event.getResolution().getScaledHeight_double();
             int row = 0;
             if (Configuration.HUD.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
-                if (Configuration.HUD.nonVerbose)
-                    infoPos = pos.getX() + " | "  + pos.getY() + " | " + pos.getZ();
-                drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos, upscale);
+                if (Configuration.HUD.nonVerbose) infoPos = pos.getX() + " | " + pos.getY() + " | " + pos.getZ();
+
+                if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
+                    drawOpenAtlasInfoLine(mc, (GuiAtlas) mc.currentScreen, row++, infoPos, upscale);
+                else if (renderPos != Configuration.InfoPosition.OPENATLAS)
+                    drawMiniMapInfoLine(mc, row++, gameWidth, gameHeight, infoPos, upscale);
             }
             if (Configuration.HUD.enableBiomeInfo) {
                 String infoBiome = mc.world.getBiome(pos).getBiomeName();
-                drawInfoLine(mc, row++, gameWidth, gameHeight, infoBiome, upscale);
+
+                if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
+                    drawOpenAtlasInfoLine(mc, (GuiAtlas) mc.currentScreen, row++, infoBiome, upscale);
+                else if (renderPos != Configuration.InfoPosition.OPENATLAS)
+                    drawMiniMapInfoLine(mc, row++, gameWidth, gameHeight, infoBiome, upscale);
             }
             if (Configuration.HUD.enableTimeInfo) {
                 MCDateTime dt = new MCDateTime(mc.world.getWorldTime());
-
                 String infoTime = String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min);
 
-                drawInfoLine(mc, row, gameWidth, gameHeight, infoTime, upscale);
+                if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
+                    drawOpenAtlasInfoLine(mc, (GuiAtlas) mc.currentScreen, row, infoTime, upscale);
+                else if (renderPos != Configuration.InfoPosition.OPENATLAS)
+                    drawMiniMapInfoLine(mc, row, gameWidth, gameHeight, infoTime, upscale);
             }
             GlStateManager.popMatrix();
         }
     }
 
-    private static void drawInfoLine(Minecraft mc, int row, float gameWidth, float gameHeight, String info, float scale) {
+    private static void drawMiniMapInfoLine(Minecraft mc, int row, float gameWidth, float gameHeight, String info, float scale) {
         float infoWidth = mc.fontRenderer.getStringWidth(info);
 
         float atlasX = AAOConfig.position.xPosition * scale;
         if (AAOConfig.position.alignRight) atlasX = (gameWidth - (atlasX + AAOConfig.position.width)) * scale;
         float startX = (atlasX + (AAOConfig.position.width * scale / 2f - infoWidth / 2f));
 
-        float atlasY = (AAOConfig.position.yPosition + 2 ) * scale + row * (mc.fontRenderer.FONT_HEIGHT + 1 * scale);
+        float atlasY = (AAOConfig.position.yPosition + 2) * scale + row * (mc.fontRenderer.FONT_HEIGHT + 1 * scale);
         if (AAOConfig.position.alignBottom) atlasY = gameHeight - (atlasY + AAOConfig.position.height);
         float startY = (atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height) * scale);
+
+        mc.fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
+    }
+
+    private static void drawOpenAtlasInfoLine(Minecraft mc, GuiAtlas gui, int row, String info, float scale) {
+        float infoWidth = mc.fontRenderer.getStringWidth(info);
+
+        float startX = (gui.getGuiX() * scale + (GuiAtlas.WIDTH * scale / 2f - infoWidth / 2f));
+        float startY = (gui.getGuiY() + 2) * scale + row * (mc.fontRenderer.FONT_HEIGHT + 1 * scale) + GuiAtlas.HEIGHT * scale;
 
         mc.fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
     }

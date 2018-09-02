@@ -38,6 +38,9 @@ public class Configuration {
         @Config.Comment("The color to display the info in (hexadecimal)")
         public String color = "ffffff";
 
+        @Config.Comment("where should the information be rendered")
+        public InfoPosition displayPosition = InfoPosition.BOTH;
+
         @Config.Ignore
         public int RGB = Integer.parseInt(color, 16);
     }
@@ -96,9 +99,15 @@ public class Configuration {
         SMALL(0.5f);
 
         public final float scale;
-        private TextScale(float scale) {
+        TextScale(float scale) {
             this.scale = scale;
         }
+    }
+
+    public enum InfoPosition {
+        MINIMAP(),
+        OPENATLAS(),
+        BOTH()
     }
 
     @Mod.EventBusSubscriber
