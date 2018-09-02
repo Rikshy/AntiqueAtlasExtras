@@ -37,7 +37,9 @@ public class MarkerClickPacket implements IMessage, IMessageHandler<MarkerClickP
 
     @Override
     public IMessage onMessage(MarkerClickPacket message, MessageContext ctx) {
-        TravelHandler.travel(AtlasExtras.proxy.getPlayerEntity(ctx).world, message.markderId, message.playerId);
+        NetworkHelper.getThreadListener(ctx).addScheduledTask(() -> {
+            TravelHandler.travel(AtlasExtras.proxy.getPlayerEntity(ctx).world, message.markderId, message.playerId);
+        });
         return null;
     }
 }
