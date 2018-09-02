@@ -26,7 +26,7 @@ minecraft {
 
     mappings = "$mcp_version"
 
-    replace '@Gversion@', "$mod_version.$patch_version"
+    replace '@version@', "$mod_version.$patch_version"
     replaceIn 'AtlasExtras.java'
 }
 
