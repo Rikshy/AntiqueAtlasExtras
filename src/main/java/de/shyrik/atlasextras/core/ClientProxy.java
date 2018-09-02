@@ -4,27 +4,28 @@ import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import hunternif.mc.atlas.api.AtlasAPI;
 import hunternif.mc.atlas.registry.MarkerType;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.TextureStitchEvent;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import org.lwjgl.input.Keyboard;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Mod.EventBusSubscriber
 public class ClientProxy extends CommonProxy {
+
+    public static final KeyBinding toggleInfo = new KeyBinding("atlasextras.keybind.togglehud", KeyConflictContext.IN_GAME, Keyboard.KEY_SEMICOLON, "key.categories.misc");
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
 
+        ClientRegistry.registerKeyBinding(toggleInfo);
         if (Configuration.COMPAT.enableFastTravel) MinecraftForge.EVENT_BUS.register(new AtlasHandler());
     }
 
@@ -39,13 +40,5 @@ public class ClientProxy extends CommonProxy {
 
         for (MarkerType mt : list)
             AtlasAPI.getMarkerAPI().registerMarker(mt);
-    }
-
-    @SubscribeEvent
-    @SideOnly(Side.CLIENT)
-    public static void registerTex(TextureStitchEvent.Pre event) {
-        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/travelfrom"));
-        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/travelto"));
-        event.getMap().registerSprite(new ResourceLocation(AtlasExtras.MODID, "markers/travel"));
     }
 }

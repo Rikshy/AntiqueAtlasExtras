@@ -1,5 +1,6 @@
 package de.shyrik.atlasextras.features;
 
+import de.shyrik.atlasextras.core.ClientProxy;
 import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.util.MCDateTime;
 import hunternif.mc.atlas.RegistrarAntiqueAtlas;
@@ -14,17 +15,27 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
 @Mod.EventBusSubscriber
 public class OverlayHandler {
 
+    @SideOnly(Side.CLIENT)
+    @SubscribeEvent(receiveCanceled=true)
+    public static void onEvent(InputEvent.KeyInputEvent event) {
+        if(ClientProxy.toggleInfo.isPressed()) {
+            Configuration.HUD.toggleHUDDisplay = !Configuration.HUD.toggleHUDDisplay;
+            Configuration.Save();
+        }
+    }
+
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public static void onRenderGameOverlay(RenderGameOverlayEvent event) {
         final Minecraft mc = Minecraft.getMinecraft();
-        if (event.getType() == RenderGameOverlayEvent.ElementType.TEXT && mc.world != null && !mc.gameSettings.showDebugInfo) {
+        if (Configuration.HUD.toggleHUDDisplay && event.getType() == RenderGameOverlayEvent.ElementType.TEXT && mc.world != null && !mc.gameSettings.showDebugInfo) {
 
             if (!AAOConfig.appearance.enabled) return;
             //Is minimap currently active

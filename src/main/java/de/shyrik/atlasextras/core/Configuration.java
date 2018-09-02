@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -40,6 +41,9 @@ public class Configuration {
 
         @Config.Comment("where should the information be rendered")
         public InfoPosition displayPosition = InfoPosition.BOTH;
+
+        @Config.Comment("toggles if the hud should be shown, this also has a keybind")
+        public boolean toggleHUDDisplay = true;
 
         @Config.Ignore
         public int RGB = Integer.parseInt(color, 16);
@@ -108,6 +112,10 @@ public class Configuration {
         MINIMAP(),
         OPENATLAS(),
         BOTH()
+    }
+
+    public static void Save() {
+        ConfigManager.sync(AtlasExtras.MODID, Config.Type.INSTANCE);
     }
 
     @Mod.EventBusSubscriber

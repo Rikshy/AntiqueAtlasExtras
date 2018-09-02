@@ -15,3 +15,5 @@ atlasextras.message.toodayumexpensive=You can't pay the traveling price
 atlasextras.message.waypointnotknown=This waystone is unknown to you
 atlasextras.message.toofaraway=Your chosen destination is out of reach
 
+atlasextras.keybind.togglehud=Toggle Atlas HUD Info
+
