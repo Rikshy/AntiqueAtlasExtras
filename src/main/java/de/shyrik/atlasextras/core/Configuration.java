@@ -32,6 +32,9 @@ public class Configuration {
         @Config.Comment("scale of the HUD information")
         public TextScale textScale = TextScale.NORMAL;
 
+        @Config.Comment("true removes the 'x:' from the ui and makes coords ',' separated")
+        public boolean nonVerbose = true;
+
         @Config.Comment("The color to display the info in (hexadecimal)")
         public String color = "ffffff";
 

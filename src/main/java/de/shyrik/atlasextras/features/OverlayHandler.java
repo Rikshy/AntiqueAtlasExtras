@@ -46,6 +46,8 @@ public class OverlayHandler {
             int row = 0;
             if (Configuration.GENERAL.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
+                if (Configuration.GENERAL.nonVerbose)
+                    infoPos = pos.getX() + " | "  + pos.getY() + " | " + pos.getZ();
                 drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos, upscale);
             }
             if (Configuration.GENERAL.enableBiomeInfo) {
@@ -74,7 +76,7 @@ public class OverlayHandler {
         if (AAOConfig.position.alignBottom) atlasY = gameHeight - (atlasY + AAOConfig.position.height);
         float startY = (atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height) * scale);
 
-        mc.fontRenderer.drawString(info, startX, startY, Configuration.GENERAL.RGB, true);
+        mc.fontRenderer.drawString(info, startX, startY, Configuration.GENERAL.RGB, false);
     }
 
     private static Integer getPlayerAtlas(EntityPlayer player) {
