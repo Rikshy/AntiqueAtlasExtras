@@ -23,9 +23,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 public class OverlayHandler {
 
     @SideOnly(Side.CLIENT)
-    @SubscribeEvent(receiveCanceled=true)
+    @SubscribeEvent(receiveCanceled = true)
     public static void onEvent(InputEvent.KeyInputEvent event) {
-        if(ClientProxy.toggleInfo.isPressed()) {
+        if (ClientProxy.toggleInfo.isPressed()) {
             Configuration.HUD.toggleHUDDisplay = !Configuration.HUD.toggleHUDDisplay;
             Configuration.Save();
         }
