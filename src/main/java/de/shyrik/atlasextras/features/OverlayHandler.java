@@ -3,8 +3,10 @@ package de.shyrik.atlasextras.features;
 import de.shyrik.atlasextras.core.ClientProxy;
 import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.util.MCDateTime;
+import hunternif.mc.atlas.AntiqueAtlasMod;
 import hunternif.mc.atlas.RegistrarAntiqueAtlas;
 import hunternif.mc.atlas.SettingsConfig;
+import hunternif.mc.atlas.api.AtlasAPI;
 import hunternif.mc.atlas.client.gui.GuiAtlas;
 import kenkron.antiqueatlasoverlay.AAOConfig;
 import net.minecraft.client.Minecraft;
@@ -28,6 +30,14 @@ public class OverlayHandler {
         if (ClientProxy.toggleInfo.isPressed()) {
             Configuration.HUD.toggleHUDDisplay = !Configuration.HUD.toggleHUDDisplay;
             Configuration.Save();
+        }
+        if (ClientProxy.openAtlas.isPressed()) {
+            Integer atlasId = getPlayerAtlas(Minecraft.getMinecraft().player);
+            if (atlasId != null) {
+                ItemStack atlas = new ItemStack(AtlasAPI.ATLAS_ITEM);
+                atlas.setItemDamage(atlasId);
+                AntiqueAtlasMod.proxy.openAtlasGUI(atlas);
+            }
         }
     }
 

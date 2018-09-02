@@ -1,5 +1,6 @@
 package de.shyrik.atlasextras.core;
 
+import com.google.common.collect.ImmutableList;
 import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import hunternif.mc.atlas.api.AtlasAPI;
@@ -19,19 +20,34 @@ import java.util.stream.Stream;
 
 public class ClientProxy extends CommonProxy {
 
-    public static final KeyBinding toggleInfo = new KeyBinding("atlasextras.keybind.togglehud", KeyConflictContext.IN_GAME, Keyboard.KEY_SEMICOLON, "key.categories.misc");
+    public static final KeyBinding toggleInfo;
+    public static final KeyBinding openAtlas;
+    private static final List<KeyBinding> keybinds;
+
+    private static final String KEY_CAT = "atlasextras.keybind.category";
+
+    static {
+        keybinds = ImmutableList.of(
+                toggleInfo = new KeyBinding("atlasextras.keybind.togglehud", KeyConflictContext.IN_GAME, Keyboard.KEY_SEMICOLON, KEY_CAT),
+                openAtlas = new KeyBinding("atlasextras.keybind.openatlas", KeyConflictContext.IN_GAME, Keyboard.KEY_M, KEY_CAT)
+        );
+    }
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
 
-        ClientRegistry.registerKeyBinding(toggleInfo);
         if (Configuration.COMPAT.enableFastTravel) MinecraftForge.EVENT_BUS.register(new AtlasHandler());
     }
 
     @Override
     public void init(FMLInitializationEvent event) {
         super.init(event);
+
+        for (KeyBinding kb : keybinds) {
+            ClientRegistry.registerKeyBinding(kb);
+        }
+
         List<MarkerType> list = Stream.of(
                 new MarkerType(MARKER_TRAVELFROM, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelfrom.png")),
                 new MarkerType(MARKER_TRAVELTO, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelto.png")),
