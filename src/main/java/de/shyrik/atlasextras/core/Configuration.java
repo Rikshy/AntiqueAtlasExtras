@@ -29,6 +29,9 @@ public class Configuration {
         @Config.Comment("true if the time info should be shown, false otherwise")
         public boolean enableTimeInfo = true;
 
+        @Config.Comment("scale of the HUD information")
+        public TextScale textScale = TextScale.NORMAL;
+
         @Config.Comment("The color to display the info in (hexadecimal)")
         public String color = "ffffff";
 
@@ -82,6 +85,17 @@ public class Configuration {
         XP(),
         ITEM(),
         NOTHING()
+    }
+
+    public enum TextScale {
+        BIG(1f),
+        NORMAL(0.75f),
+        SMALL(0.5f);
+
+        public final float scale;
+        private TextScale(float scale) {
+            this.scale = scale;
+        }
     }
 
     @Mod.EventBusSubscriber

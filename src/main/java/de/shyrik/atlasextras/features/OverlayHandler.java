@@ -7,6 +7,8 @@ import hunternif.mc.atlas.SettingsConfig;
 import hunternif.mc.atlas.client.gui.GuiAtlas;
 import kenkron.antiqueatlasoverlay.AAOConfig;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -28,44 +30,51 @@ public class OverlayHandler {
             if (!AAOConfig.appearance.enabled) return;
             // Overlay must close if Atlas GUI is opened
             if (mc.currentScreen instanceof GuiAtlas) return;
+            //Is minimap currently active
             if (getPlayerAtlas(mc.player) == null) return;
 
             BlockPos pos = mc.player.getPosition();
 
-            int gameWidth = event.getResolution().getScaledWidth();
-            int gameHeight = event.getResolution().getScaledHeight();
+            float scale = Configuration.GENERAL.textScale.scale;
+            float upscale = 1 / scale;
 
+            GlStateManager.pushMatrix();
+            GlStateManager.scale(scale, scale, scale);
+
+            float gameWidth = (float)event.getResolution().getScaledWidth_double();
+            float gameHeight = (float)event.getResolution().getScaledHeight_double();
             int row = 0;
             if (Configuration.GENERAL.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
-                drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos);
+                drawInfoLine(mc, row++, gameWidth, gameHeight, infoPos, upscale);
             }
             if (Configuration.GENERAL.enableBiomeInfo) {
                 String infoBiome = mc.world.getBiome(pos).getBiomeName();
-                drawInfoLine(mc, row++, gameWidth, gameHeight, infoBiome);
+                drawInfoLine(mc, row++, gameWidth, gameHeight, infoBiome, upscale);
             }
             if (Configuration.GENERAL.enableTimeInfo) {
                 MCDateTime dt = new MCDateTime(mc.world.getWorldTime());
 
                 String infoTime = String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min);
 
-                drawInfoLine(mc, row, gameWidth, gameHeight, infoTime);
+                drawInfoLine(mc, row, gameWidth, gameHeight, infoTime, upscale);
             }
+            GlStateManager.popMatrix();
         }
     }
 
-    private static void drawInfoLine(Minecraft mc, int row, int gameWidth, int gameHeight, String info) {
-        int infoWidth = mc.fontRenderer.getStringWidth(info);
+    private static void drawInfoLine(Minecraft mc, int row, float gameWidth, float gameHeight, String info, float scale) {
+        float infoWidth = mc.fontRenderer.getStringWidth(info);
 
-        int atlasX = AAOConfig.position.xPosition;
-        if (AAOConfig.position.alignRight) atlasX = gameWidth - (atlasX + AAOConfig.position.width);
-        int startX = atlasX + (AAOConfig.position.width / 2 - infoWidth / 2);
+        float atlasX = AAOConfig.position.xPosition * scale;
+        if (AAOConfig.position.alignRight) atlasX = (gameWidth - (atlasX + AAOConfig.position.width)) * scale;
+        float startX = (atlasX + (AAOConfig.position.width * scale / 2f - infoWidth / 2f));
 
-        int atlasY = AAOConfig.position.yPosition + 2 + row * (mc.fontRenderer.FONT_HEIGHT + 1);
+        float atlasY = (AAOConfig.position.yPosition + 2 ) * scale + row * (mc.fontRenderer.FONT_HEIGHT + 1 * scale);
         if (AAOConfig.position.alignBottom) atlasY = gameHeight - (atlasY + AAOConfig.position.height);
-        int startY = atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height);
+        float startY = (atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height) * scale);
 
-        mc.fontRenderer.drawString(info, startX, startY, Configuration.GENERAL.RGB);
+        mc.fontRenderer.drawString(info, startX, startY, Configuration.GENERAL.RGB, true);
     }
 
     private static Integer getPlayerAtlas(EntityPlayer player) {
