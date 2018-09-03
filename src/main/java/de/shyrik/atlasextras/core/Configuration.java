@@ -6,7 +6,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
-import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -35,6 +34,9 @@ public class Configuration {
 
         @Config.Comment("true removes the 'x:' from the ui and makes coords ',' separated")
         public boolean nonVerbose = true;
+
+        @Config.Comment("the separator to use when non verbose (Max 3 characters - rest will be cutoff)")
+        public String nonVerboseSeparator = " | ";
 
         @Config.Comment("The color to display the info in (hexadecimal)")
         public String color = "ffffff";

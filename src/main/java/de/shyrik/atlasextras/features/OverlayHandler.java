@@ -66,7 +66,10 @@ public class OverlayHandler {
             int row = 0;
             if (Configuration.HUD.enablePositionInfo) {
                 String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
-                if (Configuration.HUD.nonVerbose) infoPos = pos.getX() + " | " + pos.getY() + " | " + pos.getZ();
+                if (Configuration.HUD.nonVerbose) {
+                    String sep = Configuration.HUD.nonVerboseSeparator.length() > 3 ? Configuration.HUD.nonVerboseSeparator.substring(0, 3) : Configuration.nonVerboseSeparator;
+                    infoPos = pos.getX() + sep + pos.getY() + sep + pos.getZ();
+                }
 
                 if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
                     drawOpenAtlasInfoLine(mc, (GuiAtlas) mc.currentScreen, row++, infoPos, upscale);
