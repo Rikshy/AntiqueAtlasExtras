@@ -1,0 +1,11 @@
+atlasextras.datetime.day.monday=周一
+atlasextras.datetime.day.tuesday=周二
+atlasextras.datetime.day.wednesday=周三
+atlasextras.datetime.day.thursday=周四
+atlasextras.datetime.day.friday=周五
+atlasextras.datetime.day.saturday=周六
+atlasextras.datetime.day.sunday=周日
+
+atlasextras.keybind.category=复古地图
+atlasextras.keybind.togglehud=开关地图信息
+atlasextras.keybind.openatlas=打开地图界面
