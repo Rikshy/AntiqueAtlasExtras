@@ -36,7 +36,7 @@ public class TravelHandler {
         if (mark != null && mark.canTravelTo) {
             EntityPlayer player = world.getPlayerEntityByUUID(UUID.fromString(playerUUID));
             if (player != null && map.hasJumpNearby(player.getPosition())) {
-                if (player.isCreative() || canPay(mark.sourceMod, player, mark.pos)) {
+                if (player.isCreative() || canTravel(mark.sourceMod, player, mark.pos)) {
                     if (tryTravel(world, player, mark.pos)) pay(mark.sourceMod, player, mark.pos);
                     else player.sendMessage(new TextComponentTranslation("atlasextras.message.blocked"));
                 }
@@ -100,7 +100,7 @@ public class TravelHandler {
         else handlers.get(modid).pay(player, destination);
     }
 
-    private static boolean canPay(String modid, EntityPlayer player, BlockPos destination) {
+    private static boolean canTravel(String modid, EntityPlayer player, BlockPos destination) {
         if (!handlers.containsKey(modid) || Configuration.COSTPROVIDER.useOwnCostProvider)
             return handlers.get(AtlasExtras.MODID).canTravel(player, destination);
         return handlers.get(modid).canTravel(player, destination);
