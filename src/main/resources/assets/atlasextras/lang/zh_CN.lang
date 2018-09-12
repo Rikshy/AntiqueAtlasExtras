@@ -6,6 +6,15 @@ atlasextras.datetime.day.friday=周五
 atlasextras.datetime.day.saturday=周六
 atlasextras.datetime.day.sunday=周日
 
+atlasextras.marker.signpost=指路牌
+atlasextras.marker.waystone=传送石
+
+atlasextras.message.blocked=目标受阻
+atlasextras.message.cooldown=传送石处于冷却时间
+atlasextras.message.toodayumexpensive=您的经验值不足以支付传送费用
+atlasextras.message.waypointnotknown=您无法选择未知传送石
+atlasextras.message.toofaraway=您选择的目标超出传送范围
+
 atlasextras.keybind.category=复古地图
 atlasextras.keybind.togglehud=开关地图信息
 atlasextras.keybind.openatlas=打开地图界面
