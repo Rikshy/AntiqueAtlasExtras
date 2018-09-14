@@ -1,13 +1,24 @@
 package de.shyrik.atlasextras;
 
+import de.shyrik.atlasextras.compat.SignpostHandler;
+import de.shyrik.atlasextras.compat.WaystonesHandler;
+import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.core.IModProxy;
+import de.shyrik.atlasextras.features.travel.AtlasExtrasCostHandler;
+import de.shyrik.atlasextras.features.travel.TravelHandler;
 import de.shyrik.atlasextras.network.NetworkHelper;
+import net.blay09.mods.waystones.network.NetworkHandler;
+import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = AtlasExtras.MODID, name = AtlasExtras.NAME, version = AtlasExtras.VERSION, dependencies = AtlasExtras.DEPENDENCY)
 public class AtlasExtras {
@@ -17,7 +28,7 @@ public class AtlasExtras {
     public static final String DEPENDENCY = "required-after:antiqueatlas;after:signpost;after:waystones";
 
     public static final String CLIENT_PROXY = "de.shyrik.atlasextras.core.ClientProxy";
-    public static final String SERVER_PROXY = "de.shyrik.atlasextras.core.CommonProxy";
+    public static final String SERVER_PROXY = "de.shyrik.atlasextras.core.ServerProxy";
 
     public static final String CHANNEL = "atlasextras";
 
@@ -28,9 +39,27 @@ public class AtlasExtras {
     @SidedProxy(clientSide = AtlasExtras.CLIENT_PROXY, serverSide = AtlasExtras.SERVER_PROXY)
     public static IModProxy proxy;
 
+    @Mod.Instance
+    public static AtlasExtras instance;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         NetworkHelper.registerPackets();
+        TravelHandler.registerCostHandler(AtlasExtras.MODID, new AtlasExtrasCostHandler());
+
+        if (Loader.isModLoaded(SignpostHandler.MODID) && Configuration.COMPAT.compatSignpost) {
+            SignpostHandler sph = new SignpostHandler();
+            MinecraftForge.EVENT_BUS.register(sph);
+            TravelHandler.registerCostHandler(SignpostHandler.MODID, sph);
+        }
+
+        if (Loader.isModLoaded(WaystonesHandler.MODID) && Configuration.COMPAT.compatWaystone) {
+            WaystonesHandler wsh = new WaystonesHandler();
+            MinecraftForge.EVENT_BUS.register(wsh);
+            TravelHandler.registerCostHandler(WaystonesHandler.MODID, wsh);
+            NetworkHandler.channel.registerMessage(WaystonesHandler.class, MessageEditWaystone.class, 12, Side.SERVER);
+        }
+
         proxy.preInit(event);
     }
 
