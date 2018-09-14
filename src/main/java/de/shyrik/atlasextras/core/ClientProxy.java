@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class ClientProxy extends CommonProxy {
+public class ClientProxy implements IModProxy {
 
     public static final KeyBinding toggleInfo;
     public static final KeyBinding openAtlas;
@@ -35,23 +35,19 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void preInit(FMLPreInitializationEvent event) {
-        super.preInit(event);
-
         if (Configuration.COMPAT.enableFastTravel) MinecraftForge.EVENT_BUS.register(new AtlasHandler());
     }
 
     @Override
     public void init(FMLInitializationEvent event) {
-        super.init(event);
-
         for (KeyBinding kb : keybinds) {
             ClientRegistry.registerKeyBinding(kb);
         }
 
         List<MarkerType> list = Stream.of(
-                new MarkerType(MARKER_TRAVELFROM, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelfrom.png")),
-                new MarkerType(MARKER_TRAVELTO, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelto.png")),
-                new MarkerType(MARKER_TRAVEL, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travel.png"))
+                new MarkerType(AtlasExtras.MARKER_TRAVELFROM, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelfrom.png")),
+                new MarkerType(AtlasExtras.MARKER_TRAVELTO, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travelto.png")),
+                new MarkerType(AtlasExtras.MARKER_TRAVEL, new ResourceLocation(AtlasExtras.MODID, "textures/markers/travel.png"))
         ).collect(Collectors.toList());
 
         for (MarkerType mt : list)

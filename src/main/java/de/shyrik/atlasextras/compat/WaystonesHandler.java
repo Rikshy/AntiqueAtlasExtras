@@ -1,8 +1,8 @@
 package de.shyrik.atlasextras.compat;
 
-import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
+import de.shyrik.atlasextras.network.NetworkHelper;
 import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
@@ -73,7 +73,7 @@ public class WaystonesHandler implements TravelHandler.ICostHandler, IMessageHan
     @Override
     public IMessage onMessage(MessageEditWaystone message, MessageContext ctx) {
         NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-            EntityPlayer player = AtlasExtras.proxy.getPlayerEntity(ctx);
+            EntityPlayer player = NetworkHelper.getPlayerEntity(ctx);
             BlockPos pos = message.getPos();
             if (player.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10) {
                 return;

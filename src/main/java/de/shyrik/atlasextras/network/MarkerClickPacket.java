@@ -1,6 +1,5 @@
 package de.shyrik.atlasextras.network;
 
-import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -38,7 +37,7 @@ public class MarkerClickPacket implements IMessage, IMessageHandler<MarkerClickP
     @Override
     public IMessage onMessage(MarkerClickPacket message, MessageContext ctx) {
         NetworkHelper.getThreadListener(ctx).addScheduledTask(() -> {
-            TravelHandler.travel(AtlasExtras.proxy.getPlayerEntity(ctx).world, message.markderId, message.playerId);
+            TravelHandler.travel(NetworkHelper.getPlayerEntity(ctx).world, message.markderId, message.playerId);
         });
         return null;
     }

@@ -2,6 +2,7 @@ package de.shyrik.atlasextras.network;
 
 import de.shyrik.atlasextras.AtlasExtras;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.WorldServer;
@@ -33,6 +34,13 @@ public class NetworkHelper {
     @SideOnly(Side.CLIENT)
     public static IThreadListener getClientThreadListener() {
         return Minecraft.getMinecraft();
+    }
+
+    /**
+     * Returns a side-appropriate EntityPlayer for use during message handling
+     */
+    public static EntityPlayer getPlayerEntity(MessageContext ctx) {
+        return ctx.getServerHandler().player;
     }
 
     /**

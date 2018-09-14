@@ -1,6 +1,6 @@
 package de.shyrik.atlasextras.features.travel;
 
-import de.shyrik.atlasextras.core.CommonProxy;
+import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.network.MarkerClickPacket;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import hunternif.mc.atlas.api.AtlasAPI;
@@ -9,16 +9,19 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AtlasHandler {
 
     @SubscribeEvent
+    @SideOnly(Side.CLIENT)
     public void onMarkerClick(MarkerClickedEvent event) {
         NetworkHelper.sendToServer(new MarkerClickPacket(event.marker.getId(), event.player));
     }
 
     public static void addMarker(World world, BlockPos pos, String name, boolean canTravelTo, boolean canTravelFrom, String modid) {
-        ResourceLocation markerType = canTravelTo && canTravelFrom ? CommonProxy.MARKER_TRAVEL : canTravelTo ? CommonProxy.MARKER_TRAVELTO : CommonProxy.MARKER_TRAVELFROM;
+        ResourceLocation markerType = canTravelTo && canTravelFrom ? AtlasExtras.MARKER_TRAVEL : canTravelTo ? AtlasExtras.MARKER_TRAVELTO : AtlasExtras.MARKER_TRAVELFROM;
         MarkerMap map = MarkerMap.instance(world);
         MarkerMap.Mark mark = map.getFromPos(pos);
         if (mark != null) {

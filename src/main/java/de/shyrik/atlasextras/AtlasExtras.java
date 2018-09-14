@@ -1,13 +1,13 @@
 package de.shyrik.atlasextras;
 
-import de.shyrik.atlasextras.core.CommonProxy;
+import de.shyrik.atlasextras.core.IModProxy;
+import de.shyrik.atlasextras.network.NetworkHelper;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.logging.log4j.Logger;
 
 @Mod(modid = AtlasExtras.MODID, name = AtlasExtras.NAME, version = AtlasExtras.VERSION, dependencies = AtlasExtras.DEPENDENCY)
 public class AtlasExtras {
@@ -21,26 +21,21 @@ public class AtlasExtras {
 
     public static final String CHANNEL = "atlasextras";
 
+    public static final ResourceLocation MARKER_TRAVELFROM = new ResourceLocation(AtlasExtras.MODID, "travelfrom");
+    public static final ResourceLocation MARKER_TRAVELTO = new ResourceLocation(AtlasExtras.MODID, "travelto");
+    public static final ResourceLocation MARKER_TRAVEL = new ResourceLocation(AtlasExtras.MODID, "travel");
+
     @SidedProxy(clientSide = AtlasExtras.CLIENT_PROXY, serverSide = AtlasExtras.SERVER_PROXY)
-    public static CommonProxy proxy;
-
-    @Mod.Instance
-    public static AtlasExtras instance;
-
-    private static Logger logger;
+    public static IModProxy proxy;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
+        NetworkHelper.registerPackets();
         proxy.preInit(event);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
         proxy.init(event);
-    }
-
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event) {
-        proxy.postInit(event);
     }
 }
