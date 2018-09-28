@@ -107,8 +107,8 @@ public class OverlayHandler {
         float startX = (atlasX + (AAOConfig.position.width * scale / 2f - infoWidth / 2f));
 
         float atlasY = (AAOConfig.position.yPosition + 2) * scale + row * (fontRenderer.FONT_HEIGHT + 1 * scale);
-        if (AAOConfig.position.alignBottom) atlasY = gameHeight - (atlasY + AAOConfig.position.height);
-        float startY = (atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height) * scale);
+        if (AAOConfig.position.alignBottom) atlasY = gameHeight * scale - (atlasY + AAOConfig.position.height * scale);
+        float startY = (atlasY + (AAOConfig.position.alignBottom ? -1 : AAOConfig.position.height) * scale);
 
         fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
     }
