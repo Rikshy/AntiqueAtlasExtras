@@ -5,6 +5,7 @@ import de.shyrik.atlasextras.network.MarkerClickPacket;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import hunternif.mc.atlas.api.AtlasAPI;
 import hunternif.mc.atlas.event.MarkerClickedEvent;
+import hunternif.mc.atlas.marker.Marker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -28,8 +29,9 @@ public class AtlasHandler {
             AtlasAPI.getMarkerAPI().deleteGlobalMarker(world, mark.id);
             map.remove(mark.id);
         }
-        int id = AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, markerType.toString(), name, pos.getX(), pos.getZ());
-        map.put(id, pos, canTravelTo, canTravelFrom, modid);
+        Marker marker = AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, markerType.toString(), name, pos.getX(), pos.getZ());
+
+        if(marker != null) map.put(marker.getId(), pos, canTravelTo, canTravelFrom, modid);
     }
 
     public static void removeMarker(World world, BlockPos pos) {
