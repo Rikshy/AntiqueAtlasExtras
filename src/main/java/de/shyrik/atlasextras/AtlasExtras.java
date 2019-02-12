@@ -25,7 +25,7 @@ public class AtlasExtras {
     public static final String MODID = "atlasextras";
     public static final String NAME = "Atlas Extras";
     public static final String VERSION = "@version@";
-    public static final String DEPENDENCY = "required-after:antiqueatlas;after:signpost;after:waystones";
+    public static final String DEPENDENCY = "required-after:antiqueatlas@[4.5,);after:signpost;after:waystones";
 
     public static final String CLIENT_PROXY = "de.shyrik.atlasextras.core.ClientProxy";
     public static final String SERVER_PROXY = "de.shyrik.atlasextras.core.ServerProxy";
@@ -38,9 +38,6 @@ public class AtlasExtras {
 
     @SidedProxy(clientSide = AtlasExtras.CLIENT_PROXY, serverSide = AtlasExtras.SERVER_PROXY)
     public static IModProxy proxy;
-
-    @Mod.Instance
-    public static AtlasExtras instance;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
