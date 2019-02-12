@@ -3,7 +3,7 @@ package de.shyrik.atlasextras.features.travel;
 import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.network.NetworkHelper;
-import de.shyrik.atlasextras.network.TravelEffectPacket;
+import de.shyrik.atlasextras.network.packet.TravelEffectPacket;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.EnumFacing;

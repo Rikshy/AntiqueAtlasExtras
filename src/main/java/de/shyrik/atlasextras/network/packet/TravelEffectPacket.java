@@ -1,5 +1,6 @@
-package de.shyrik.atlasextras.network;
+package de.shyrik.atlasextras.network.packet;
 
+import de.shyrik.atlasextras.network.NetworkHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;

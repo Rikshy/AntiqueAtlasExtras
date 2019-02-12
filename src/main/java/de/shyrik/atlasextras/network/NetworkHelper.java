@@ -1,6 +1,8 @@
 package de.shyrik.atlasextras.network;
 
 import de.shyrik.atlasextras.AtlasExtras;
+import de.shyrik.atlasextras.network.packet.MarkerClickPacket;
+import de.shyrik.atlasextras.network.packet.TravelEffectPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;

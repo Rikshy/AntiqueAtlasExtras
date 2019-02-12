@@ -1,6 +1,7 @@
-package de.shyrik.atlasextras.network;
+package de.shyrik.atlasextras.network.packet;
 
 import de.shyrik.atlasextras.features.travel.TravelHandler;
+import de.shyrik.atlasextras.network.NetworkHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.fml.common.network.ByteBufUtils;
@@ -14,30 +15,30 @@ public class MarkerClickPacket implements IMessage, IMessageHandler<MarkerClickP
     public MarkerClickPacket() {
     }
 
-    public MarkerClickPacket(int markderId, EntityPlayer player) {
-        this.markderId = markderId;
+    public MarkerClickPacket(int markerId, EntityPlayer player) {
+        this.markerId = markerId;
         this.playerId = player.getUniqueID().toString();
     }
 
-    private int markderId;
+    private int markerId;
     private String playerId;
 
     @Override
     public void fromBytes(ByteBuf buf) {
-        markderId = buf.readInt();
+        markerId = buf.readInt();
         playerId = ByteBufUtils.readUTF8String(buf);
     }
 
     @Override
     public void toBytes(ByteBuf buf) {
-        buf.writeInt(markderId);
+        buf.writeInt(markerId);
         ByteBufUtils.writeUTF8String(buf, playerId);
     }
 
     @Override
     public IMessage onMessage(MarkerClickPacket message, MessageContext ctx) {
         NetworkHelper.getThreadListener(ctx).addScheduledTask(() -> {
-            TravelHandler.travel(NetworkHelper.getPlayerEntity(ctx).world, message.markderId, message.playerId);
+            TravelHandler.travel(NetworkHelper.getPlayerEntity(ctx).world, message.markerId, message.playerId);
         });
         return null;
     }
