@@ -2,32 +2,33 @@ package de.shyrik.atlasextras.compat;
 
 import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
-import de.shyrik.atlasextras.network.NetworkHelper;
-import net.blay09.mods.waystones.GlobalWaystones;
 import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
 import net.blay09.mods.waystones.block.BlockWaystone;
-import net.blay09.mods.waystones.block.TileWaystone;
-import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageEditWaystone;
+import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
 import net.blay09.mods.waystones.util.WaystoneEntry;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.BlockEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
-@Optional.Interface(iface = "net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler", modid = WaystonesHandler.MODID)
-public class WaystonesHandler implements TravelHandler.ICostHandler, IMessageHandler<MessageEditWaystone, IMessage> {
+public class WaystonesHandler implements TravelHandler.ICostHandler {
     public static final String MODID = "waystones";
+
+    @SubscribeEvent
+    @Optional.Method(modid = MODID)
+    public void onWaystoneActivated(WaystoneActivatedEvent event) {
+        WorldServer w =FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(event.getDimension());
+        FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(event.getDimension()).addScheduledTask(() ->
+                AtlasHandler.addMarker(w, event.getPos(), event.getWaystoneName(), true, true, MODID)
+        );
+    }
 
     @SubscribeEvent
     @Optional.Method(modid = MODID)
@@ -68,41 +69,5 @@ public class WaystonesHandler implements TravelHandler.ICostHandler, IMessageHan
 
         player.sendMessage(new TextComponentTranslation("atlasextras.message.waypointnotknown"));
         return false;
-    }
-
-    @Override
-    public IMessage onMessage(MessageEditWaystone message, MessageContext ctx) {
-        NetworkHandler.getThreadListener(ctx).addScheduledTask(() -> {
-            EntityPlayer player = NetworkHelper.getPlayerEntity(ctx);
-            BlockPos pos = message.getPos();
-            if (player.getDistance(pos.getX(), pos.getY(), pos.getZ()) > 10) {
-                return;
-            }
-            TileEntity tileEntity = player.world.getTileEntity(pos);
-            if (tileEntity instanceof TileWaystone) {
-                GlobalWaystones globalWaystones = GlobalWaystones.get(player.world);
-                TileWaystone tileWaystone = ((TileWaystone) tileEntity).getParent();
-
-                if (globalWaystones.getGlobalWaystone(tileWaystone.getWaystoneName()) != null && !player.capabilities.isCreativeMode && !WaystoneConfig.general.allowEveryoneGlobal) {
-                    return;
-                }
-                if (WaystoneConfig.general.restrictRenameToOwner && !tileWaystone.isOwner(player)) {
-                    return;
-                }
-
-                String newName = message.getName();
-                // Disallow %RANDOM% for non-creative players to prevent unbreakable waystone exploit
-                if (newName.equals("%RANDOM%") && player.capabilities.isCreativeMode) {
-                    newName = I18n.format("atlasextras.marker.waystone");
-                }
-
-                if (globalWaystones.getGlobalWaystone(newName) != null && !player.capabilities.isCreativeMode) {
-                    return;
-                }
-
-                AtlasHandler.addMarker(player.world, pos, newName, true, true, MODID);
-            }
-        });
-        return null;
     }
 }

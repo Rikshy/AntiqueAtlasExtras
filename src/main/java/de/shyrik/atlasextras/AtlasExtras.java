@@ -7,8 +7,6 @@ import de.shyrik.atlasextras.core.IModProxy;
 import de.shyrik.atlasextras.features.travel.AtlasExtrasCostHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
 import de.shyrik.atlasextras.network.NetworkHelper;
-import net.blay09.mods.waystones.network.NetworkHandler;
-import net.blay09.mods.waystones.network.message.MessageEditWaystone;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Loader;
@@ -17,8 +15,6 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import org.apache.logging.log4j.Logger;
 
 @Mod(modid = AtlasExtras.MODID, name = AtlasExtras.NAME, version = AtlasExtras.VERSION, dependencies = AtlasExtras.DEPENDENCY)
 public class AtlasExtras {
@@ -54,7 +50,6 @@ public class AtlasExtras {
             WaystonesHandler wsh = new WaystonesHandler();
             MinecraftForge.EVENT_BUS.register(wsh);
             TravelHandler.registerCostHandler(WaystonesHandler.MODID, wsh);
-            NetworkHandler.channel.registerMessage(WaystonesHandler.class, MessageEditWaystone.class, 12, Side.SERVER);
         }
 
         proxy.preInit(event);
