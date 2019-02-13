@@ -2,7 +2,9 @@ package de.shyrik.atlasextras.network;
 
 import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.network.packet.MarkerClickPacket;
+import de.shyrik.atlasextras.network.packet.RemoveMarkerPacket;
 import de.shyrik.atlasextras.network.packet.TravelEffectPacket;
+import de.shyrik.atlasextras.network.packet.UpdateMarkerPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.IThreadListener;
@@ -27,6 +29,8 @@ public class NetworkHelper {
     public static void registerPackets() {
         dispatcher.registerMessage(MarkerClickPacket.class, MarkerClickPacket.class, packetId++, Side.SERVER);
         dispatcher.registerMessage(TravelEffectPacket.class, TravelEffectPacket.class, packetId++, Side.CLIENT);
+        dispatcher.registerMessage(UpdateMarkerPacket.class, UpdateMarkerPacket.class, packetId++, Side.SERVER);
+        dispatcher.registerMessage(RemoveMarkerPacket.class, RemoveMarkerPacket.class, packetId++, Side.SERVER);
     }
 
     public static IThreadListener getThreadListener(MessageContext ctx) {

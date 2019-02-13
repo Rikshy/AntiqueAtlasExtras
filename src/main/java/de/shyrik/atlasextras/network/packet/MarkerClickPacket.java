@@ -40,6 +40,7 @@ public class MarkerClickPacket implements IMessage, IMessageHandler<MarkerClickP
         NetworkHelper.getThreadListener(ctx).addScheduledTask(() -> {
             TravelHandler.travel(NetworkHelper.getPlayerEntity(ctx).world, message.markerId, message.playerId);
         });
+        
         return null;
     }
 }

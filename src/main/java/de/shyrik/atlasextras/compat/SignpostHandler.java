@@ -1,7 +1,9 @@
 package de.shyrik.atlasextras.compat;
 
-import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
+import de.shyrik.atlasextras.network.NetworkHelper;
+import de.shyrik.atlasextras.network.packet.RemoveMarkerPacket;
+import de.shyrik.atlasextras.network.packet.UpdateMarkerPacket;
 import gollorum.signpost.blocks.SuperPostPost;
 import gollorum.signpost.event.UpdateWaystoneEvent;
 import gollorum.signpost.management.PostHandler;
@@ -14,8 +16,8 @@ import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+@Optional.Interface(iface = "de.shyrik.atlasextras.features.travel.TravelHandler.ICostHandler", modid = WaystonesHandler.MODID)
 public class SignpostHandler implements TravelHandler.ICostHandler {
-
     public static final String MODID = "signpost";
 
     @SubscribeEvent
@@ -24,13 +26,13 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
         BlockPos pos = new BlockPos(event.x, event.y, event.z);
         switch (event.type) {
             case PLACED:
-                AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
+                NetworkHelper.sendToServer(new UpdateMarkerPacket(event.world.provider.getDimension(), pos, event.name, true, false, MODID));
                 break;
             case NAMECHANGED:
-                AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
+                NetworkHelper.sendToServer(new UpdateMarkerPacket(event.world.provider.getDimension(), pos, event.name, true, false, MODID));
                 break;
             case DESTROYED:
-                AtlasHandler.removeMarker(event.world, pos);
+                NetworkHelper.sendToServer(new RemoveMarkerPacket(event.world.provider.getDimension(), pos));
                 break;
         }
     }
@@ -42,10 +44,10 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
             World world = event.getWorld();
             BlockPos pos = event.getPos();
             if (world.getBlockState(pos.up()).getBlock() instanceof SuperPostPost)
-                AtlasHandler.removeMarker(world, pos.up());
+                NetworkHelper.sendToServer(new RemoveMarkerPacket(world.provider.getDimension(), pos.up()));
             //No need for upstacking markers on one spot
             if (!(world.getBlockState(pos.down()).getBlock() instanceof SuperPostPost))
-                AtlasHandler.addMarker(world, pos, I18n.format("atlasextras.marker.signpost"), false, true, MODID);
+                NetworkHelper.sendToServer(new UpdateMarkerPacket(world.provider.getDimension(), pos, I18n.format("atlasextras.marker.signpost"), false, true, MODID));
         }
     }
 
@@ -53,7 +55,7 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
     @Optional.Method(modid = MODID)
     public void onSignpostBroken(BlockEvent.BreakEvent event) {
         if (event.getState().getBlock() instanceof SuperPostPost) {
-            AtlasHandler.removeMarker(event.getWorld(), event.getPos());
+            NetworkHelper.sendToServer(new RemoveMarkerPacket(event.getWorld().provider.getDimension(), event.getPos()));
         }
     }
 

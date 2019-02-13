@@ -1,7 +1,9 @@
 package de.shyrik.atlasextras.compat;
 
-import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
+import de.shyrik.atlasextras.network.NetworkHelper;
+import de.shyrik.atlasextras.network.packet.RemoveMarkerPacket;
+import de.shyrik.atlasextras.network.packet.UpdateMarkerPacket;
 import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
 import net.blay09.mods.waystones.WaystoneConfig;
@@ -12,29 +14,26 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.WorldServer;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Optional;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+
+@Optional.Interface(iface = "de.shyrik.atlasextras.features.travel.TravelHandler.ICostHandler", modid = WaystonesHandler.MODID)
 public class WaystonesHandler implements TravelHandler.ICostHandler {
     public static final String MODID = "waystones";
 
     @SubscribeEvent
     @Optional.Method(modid = MODID)
     public void onWaystoneActivated(WaystoneActivatedEvent event) {
-        WorldServer w =FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(event.getDimension());
-        FMLCommonHandler.instance().getMinecraftServerInstance().getWorld(event.getDimension()).addScheduledTask(() ->
-                AtlasHandler.addMarker(w, event.getPos(), event.getWaystoneName(), true, true, MODID)
-        );
+        NetworkHelper.sendToServer(new UpdateMarkerPacket(event.getDimension(), event.getPos(), event.getWaystoneName(), true, true, MODID));
     }
 
     @SubscribeEvent
     @Optional.Method(modid = MODID)
     public void onWaystoneBroken(BlockEvent.BreakEvent event) {
         if (event.getState().getBlock() instanceof BlockWaystone) {
-            AtlasHandler.removeMarker(event.getWorld(), event.getPos());
+            NetworkHelper.sendToServer(new RemoveMarkerPacket(event.getPlayer().dimension, event.getPos()));
         }
     }
 
