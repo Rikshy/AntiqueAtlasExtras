@@ -1,46 +1,23 @@
 package de.shyrik.atlasextras.features;
 
-import de.shyrik.atlasextras.core.ClientProxy;
 import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.util.MCDateTime;
-import hunternif.mc.atlas.AntiqueAtlasMod;
-import hunternif.mc.atlas.RegistrarAntiqueAtlas;
-import hunternif.mc.atlas.SettingsConfig;
-import hunternif.mc.atlas.api.AtlasAPI;
 import hunternif.mc.atlas.client.gui.GuiAtlas;
 import kenkron.antiqueatlasoverlay.AAOConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import static de.shyrik.atlasextras.util.AtlasHelper.getPlayerAtlas;
+
 @Mod.EventBusSubscriber
 public class OverlayHandler {
-
-    @SideOnly(Side.CLIENT)
-    @SubscribeEvent(receiveCanceled = true)
-    public static void onEvent(InputEvent.KeyInputEvent event) {
-        if (ClientProxy.toggleInfo.isPressed()) {
-            Configuration.HUD.toggleHUDDisplay = !Configuration.HUD.toggleHUDDisplay;
-            Configuration.Save();
-        }
-        if (ClientProxy.openAtlas.isPressed()) {
-            Integer atlasId = getPlayerAtlas(Minecraft.getMinecraft().player);
-            if (atlasId != null) {
-                ItemStack atlas = new ItemStack(AtlasAPI.ATLAS_ITEM);
-                atlas.setItemDamage(atlasId);
-                AntiqueAtlasMod.proxy.openAtlasGUI(atlas);
-            }
-        }
-    }
 
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
@@ -121,35 +98,5 @@ public class OverlayHandler {
         float startY = (gui.getGuiY() + 2) * scale + row * (fontRenderer.FONT_HEIGHT + 1 * scale) + GuiAtlas.HEIGHT * scale;
 
         fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
-    }
-
-    private static Integer getPlayerAtlas(EntityPlayer player) {
-        if (AAOConfig.appearance.requiresHold) {
-            ItemStack stack = player.getHeldItemMainhand();
-            ItemStack stack2 = player.getHeldItemOffhand();
-
-            if (!stack.isEmpty() && stack.getItem() == RegistrarAntiqueAtlas.ATLAS) {
-                return stack.getItemDamage();
-            } else if (!stack2.isEmpty() && stack2.getItem() == RegistrarAntiqueAtlas.ATLAS) {
-                return stack2.getItemDamage();
-            }
-        } else {
-            if (!SettingsConfig.gameplay.itemNeeded) {
-                return player.getUniqueID().hashCode();
-            }
-
-            ItemStack stack = player.getHeldItemOffhand();
-            if (!stack.isEmpty() && stack.getItem() == RegistrarAntiqueAtlas.ATLAS) {
-                return stack.getItemDamage();
-            }
-
-            for (int i = 0; i < 9; i++) {
-                stack = player.inventory.getStackInSlot(i);
-                if (!stack.isEmpty() && stack.getItem() == RegistrarAntiqueAtlas.ATLAS) {
-                    return stack.getItemDamage();
-                }
-            }
-        }
-        return null;
     }
 }

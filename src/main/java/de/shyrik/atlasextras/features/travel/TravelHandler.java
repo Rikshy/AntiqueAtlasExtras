@@ -31,10 +31,10 @@ public class TravelHandler {
 
     public static void travel(World world, int markerId, String playerUUID) {
         MarkerMap map = MarkerMap.instance(world);
+        EntityPlayer player = world.getPlayerEntityByUUID(UUID.fromString(playerUUID));
         MarkerMap.Mark mark = map.get(markerId);
 
         if (mark != null && mark.canTravelTo) {
-            EntityPlayer player = world.getPlayerEntityByUUID(UUID.fromString(playerUUID));
             if (player != null && map.hasJumpNearby(player.getPosition())) {
                 if (player.isCreative() || canTravel(mark.sourceMod, player, mark.pos)) {
                     if (tryTravel(world, player, mark.pos)) pay(mark.sourceMod, player, mark.pos);

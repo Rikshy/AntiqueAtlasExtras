@@ -38,6 +38,7 @@ public class MarkerMap extends WorldSavedData {
             map = new MarkerMap();
             world.getPerWorldStorage().setData(DATA_ID, map);
         }
+
         return map;
     }
 
@@ -53,13 +54,12 @@ public class MarkerMap extends WorldSavedData {
     }
 
     public Mark get(int id) {
-        if (marks.containsKey(id)) return marks.get(id);
-        return null;
+        return marks.getOrDefault(id, null);
     }
 
     public Mark getFromPos(@Nonnull BlockPos pos) {
-        for (Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            if (entry.getValue().pos.toLong() == pos.toLong()) return entry.getValue();
+        for (Mark entry : marks.values()) {
+            if (entry.pos.toLong() == pos.toLong()) return entry;
         }
         return null;
     }
@@ -69,10 +69,11 @@ public class MarkerMap extends WorldSavedData {
     }
 
     public boolean hasJumpNearby(@Nonnull BlockPos pos) {
-        for (Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            if (entry.getValue().canTravelFrom && entry.getValue().pos.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
+        for (Mark entry : marks.values()) {
+            if (entry.canTravelFrom && entry.pos.getDistance(pos.getX(), pos.getY(), pos.getZ()) <= Configuration.COMPAT.distanceToMarker)
                 return true;
         }
+
         return false;
     }
 
@@ -85,8 +86,10 @@ public class MarkerMap extends WorldSavedData {
 
             marks.put(id, new Mark(id,
                     new BlockPos(tag.getInteger(NBT_X), tag.getInteger(NBT_Y), tag.getInteger(NBT_Z)),
-                    tag.getBoolean(NBT_TRAVELTO), tag.getBoolean(NBT_TRAVELFROM),
-                    tag.getString(NBT_SOURCEMOD)));
+                            tag.getBoolean(NBT_TRAVELTO),
+                            tag.getBoolean(NBT_TRAVELFROM),
+                            tag.getString(NBT_SOURCEMOD)
+                    ));
         }
     }
 
@@ -94,8 +97,7 @@ public class MarkerMap extends WorldSavedData {
     @Override
     public NBTTagCompound writeToNBT(@Nonnull NBTTagCompound compound) {
         NBTTagList nbtList = new NBTTagList();
-        for (Map.Entry<Integer, Mark> entry : marks.entrySet()) {
-            Mark mark = entry.getValue();
+        for (Mark mark : marks.values()) {
 
             NBTTagCompound nbt = new NBTTagCompound();
             nbt.setInteger(NBT_ID, mark.id);
@@ -108,6 +110,7 @@ public class MarkerMap extends WorldSavedData {
 
             nbtList.appendTag(nbt);
         }
+
         compound.setTag("marks", nbtList);
         return compound;
     }
