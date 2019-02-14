@@ -1,8 +1,8 @@
 package de.shyrik.atlasextras.compat;
 
+import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
 import de.shyrik.atlasextras.network.NetworkHelper;
-import de.shyrik.atlasextras.network.packet.RemoveMarkerPacket;
 import de.shyrik.atlasextras.network.packet.UpdateMarkerPacket;
 import net.blay09.mods.waystones.PlayerWaystoneData;
 import net.blay09.mods.waystones.PlayerWaystoneHelper;
@@ -32,8 +32,8 @@ public class WaystonesHandler implements TravelHandler.ICostHandler {
     @SubscribeEvent
     @Optional.Method(modid = MODID)
     public void onWaystoneBroken(BlockEvent.BreakEvent event) {
-        if (event.getState().getBlock() instanceof BlockWaystone) {
-            NetworkHelper.sendToServer(new RemoveMarkerPacket(event.getPlayer().dimension, event.getPos()));
+        if (!event.getWorld().isRemote && event.getState().getBlock() instanceof BlockWaystone) {
+            AtlasHandler.removeMarker(event.getWorld(), event.getPos(), 2);
         }
     }
 

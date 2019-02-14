@@ -1,9 +1,10 @@
 package de.shyrik.atlasextras.features.travel;
 
 import de.shyrik.atlasextras.AtlasExtras;
-import de.shyrik.atlasextras.network.packet.MarkerClickPacket;
 import de.shyrik.atlasextras.network.NetworkHelper;
+import de.shyrik.atlasextras.network.packet.MarkerClickPacket;
 import hunternif.mc.atlas.api.AtlasAPI;
+import hunternif.mc.atlas.api.MarkerAPI;
 import hunternif.mc.atlas.event.MarkerClickedEvent;
 import hunternif.mc.atlas.marker.Marker;
 import net.minecraft.util.ResourceLocation;
@@ -24,22 +25,36 @@ public class AtlasHandler {
     public static void addMarker(World world, BlockPos pos, String name, boolean canTravelTo, boolean canTravelFrom, String modId) {
         ResourceLocation markerType = canTravelTo && canTravelFrom ? AtlasExtras.MARKER_TRAVEL : canTravelTo ? AtlasExtras.MARKER_TRAVELTO : AtlasExtras.MARKER_TRAVELFROM;
         MarkerMap map = MarkerMap.instance(world);
+        MarkerAPI api = AtlasAPI.getMarkerAPI();
         MarkerMap.Mark mark = map.getFromPos(pos);
+
         if (mark != null) {
-            AtlasAPI.getMarkerAPI().deleteGlobalMarker(world, mark.id);
+            api.deleteGlobalMarker(world, mark.id);
             map.remove(mark.id);
         }
-        Marker marker = AtlasAPI.getMarkerAPI().putGlobalMarker(world, false, markerType.toString(), name, pos.getX(), pos.getZ());
+
+        Marker marker = api.putGlobalMarker(world, false, markerType.toString(), name, pos.getX(), pos.getZ());
 
         if(marker != null) map.put(marker.getId(), pos, canTravelTo, canTravelFrom, modId);
     }
 
     public static void removeMarker(World world, BlockPos pos) {
+        removeMarker(world, pos, 1);
+    }
+
+    public static void removeMarker(World world, BlockPos pos, int blockHeight) {
         MarkerMap markers = MarkerMap.instance(world);
         MarkerMap.Mark mark = markers.getFromPos(pos);
-        if (mark != null) {
-            AtlasAPI.getMarkerAPI().deleteGlobalMarker(world, mark.id);
-            markers.remove(mark.id);
+        if (mark == null) {
+            int i = 0;
+            while (++i < blockHeight && mark == null) {
+                mark = markers.getFromPos(pos.down(i));
+            }
         }
+
+        if (mark == null) return;
+
+        AtlasAPI.getMarkerAPI().deleteGlobalMarker(world, mark.id);
+        markers.remove(mark.id);
     }
 }
