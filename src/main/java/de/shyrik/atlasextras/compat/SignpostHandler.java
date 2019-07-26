@@ -23,8 +23,6 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
         BlockPos pos = new BlockPos(event.x, event.y, event.z);
         switch (event.type) {
             case PLACED:
-                AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
-                break;
             case NAMECHANGED:
                 AtlasHandler.addMarker(event.world, pos, event.name, true, false, MODID);
                 break;
