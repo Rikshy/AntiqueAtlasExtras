@@ -21,7 +21,7 @@ compileJava {
 }
 
 minecraft {
-    version = "$forge_version"
+    version = "$mc_version-$forge_version"
     runDir = "run"
 
     mappings = "$mcp_version"
