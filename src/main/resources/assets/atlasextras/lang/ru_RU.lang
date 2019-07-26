@@ -1,0 +1,20 @@
+atlasextras.datetime.day.monday=Понедельник
+atlasextras.datetime.day.tuesday=Вторник
+atlasextras.datetime.day.wednesday=Среда
+atlasextras.datetime.day.thursday=Четверг
+atlasextras.datetime.day.friday=Пятница
+atlasextras.datetime.day.saturday=Суббота
+atlasextras.datetime.day.sunday=Воскресенье
+
+atlasextras.marker.signpost=Указатель
+atlasextras.marker.waystone=Путеводный обелиск
+
+atlasextras.message.blocked=Цель заблокирована
+atlasextras.message.cooldown=Путеводные обелиски всё ещё перезаряжаются
+atlasextras.message.toodayumexpensive=Вы не можете заплатить цену за перемещение
+atlasextras.message.waypointnotknown=Этот путеводный обелиск неизвестен для вас
+atlasextras.message.toofaraway=Выбранное назначение за пределами доступности
+
+atlasextras.keybind.category=Старинный атлас
+atlasextras.keybind.togglehud=Отображение информации под дисплеем атласа
+atlasextras.keybind.openatlas=Открыть интерфейс атласа
