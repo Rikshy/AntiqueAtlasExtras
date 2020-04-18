@@ -19,7 +19,7 @@ public class AtlasHandler {
     @SubscribeEvent
     @SideOnly(Side.CLIENT)
     public void onMarkerClick(MarkerClickedEvent event) {
-        NetworkHelper.sendToServer(new MarkerClickPacket(event.marker.getId(), event.player));
+        NetworkHelper.sendToServer(new MarkerClickPacket(Math.abs(event.marker.getId()), event.player));
     }
 
     public static void addMarker(World world, BlockPos pos, String name, boolean canTravelTo, boolean canTravelFrom, String modId) {

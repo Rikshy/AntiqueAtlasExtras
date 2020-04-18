@@ -57,7 +57,7 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
 
     @Override
     public boolean canTravel(EntityPlayer player, BlockPos destination) {
-        if(!PostHandler.canPay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ())) {
+        if(!PostHandler.canPay(player, player.getPosition(), destination)) {
             player.sendMessage(new TextComponentTranslation("atlasextras.message.toodayumexpensive"));
             return false;
         }
@@ -66,6 +66,6 @@ public class SignpostHandler implements TravelHandler.ICostHandler {
 
     @Override
     public void pay(EntityPlayer player, BlockPos destination) {
-        PostHandler.doPay(player, player.getPosition().getX(), player.getPosition().getY(), player.getPosition().getZ(), destination.getX(), destination.getY(), destination.getZ());
+        PostHandler.doPay(player, player.getPosition(), destination);
     }
 }
