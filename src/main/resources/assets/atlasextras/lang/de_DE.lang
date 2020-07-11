@@ -1,0 +1,20 @@
+atlasextras.datetime.day.monday=Montag
+atlasextras.datetime.day.tuesday=Dienstag
+atlasextras.datetime.day.wednesday=Mittwoch
+atlasextras.datetime.day.thursday=Donnerstag
+atlasextras.datetime.day.friday=Freitag
+atlasextras.datetime.day.saturday=Samstag
+atlasextras.datetime.day.sunday=Sonntag
+
+atlasextras.marker.signpost=Wegweiser
+atlasextras.marker.waystone=Wegstein
+
+atlasextras.message.blocked=Ziel blockiert
+atlasextras.message.cooldown=Wegsteine sind noch in der Abklingphase
+atlasextras.message.toodayumexpensive=Du kannst den Reisepreis nicht bezahlen
+atlasextras.message.waypointnotknown=Dieser Wegstein ist dir unbekannt
+atlasextras.message.toofaraway=Dein gewähltes Reiseziel ist unerreichbar
+
+atlasextras.keybind.category=Antiker Atlas
+atlasextras.keybind.togglehud=Atlas-HUD-Info umschalten
+atlasextras.keybind.openatlas=Atlas-GUI öffnen
