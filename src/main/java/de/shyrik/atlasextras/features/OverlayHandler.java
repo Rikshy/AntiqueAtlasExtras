@@ -1,18 +1,22 @@
 package de.shyrik.atlasextras.features;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.util.MCDateTime;
-import hunternif.mc.atlas.client.gui.GuiAtlas;
-import kenkron.antiqueatlasoverlay.AAOConfig;
+import hunternif.mc.impl.atlas.AntiqueAtlasConfig;
+import hunternif.mc.impl.atlas.client.gui.GuiAtlas;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import static de.shyrik.atlasextras.util.AtlasHelper.getPlayerAtlas;
 
@@ -20,83 +24,85 @@ import static de.shyrik.atlasextras.util.AtlasHelper.getPlayerAtlas;
 public class OverlayHandler {
 
     @SubscribeEvent
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     public static void onRenderGameOverlay(RenderGameOverlayEvent event) {
-        final Minecraft mc = Minecraft.getMinecraft();
-        if (Configuration.HUD.toggleHUDDisplay && event.getType() == RenderGameOverlayEvent.ElementType.TEXT && mc.world != null && !mc.gameSettings.showDebugInfo) {
+        final Minecraft mc = Minecraft.getInstance();
+        if (Configuration.HUD.toggleHUDDisplay && event.getType() == RenderGameOverlayEvent.ElementType.TEXT && mc.level != null && !mc.options.renderDebug) {
 
-            if (!AAOConfig.appearance.enabled) return;
+            if (!AntiqueAtlasConfig.enabled.get()) return;
             //Is minimap currently active
             if (getPlayerAtlas(mc.player) == null) return;
 
-            boolean openAtlas = mc.currentScreen instanceof GuiAtlas;
+            boolean openAtlas = mc.screen instanceof GuiAtlas;
 
-            float gameWidth = (float) event.getResolution().getScaledWidth_double();
-            float gameHeight = (float) event.getResolution().getScaledHeight_double();
+            float gameWidth = (float) event.getWindow().getScreenWidth();
+            float gameHeight = (float) event.getWindow().getScreenHeight();
             BlockPos pos = mc.player.getPosition();
 
             Configuration.InfoPosition renderPos = Configuration.HUD.displayPosition;
             float scale = Configuration.HUD.textScale.scale;
             float upscale = 1 / scale;
 
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(scale, scale, scale);
+            MatrixStack matrix = event.getMatrixStack();
+            matrix.pushPose();
+            matrix.scale(scale, scale, scale);
             int row = 0;
             if (Configuration.HUD.enablePositionInfo) {
-                String infoPos = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
+                String posText = "x: " + pos.getX() + " y: " + pos.getY() + " z: " + pos.getZ();
                 if (Configuration.HUD.nonVerbose) {
                     String sep = Configuration.HUD.nonVerboseSeparator.length() > 3 ? Configuration.HUD.nonVerboseSeparator.substring(0, 3) : Configuration.HUD.nonVerboseSeparator;
-                    infoPos = pos.getX() + sep + pos.getY() + sep + pos.getZ();
+                    posText = pos.getX() + sep + pos.getY() + sep + pos.getZ();
                 }
+                TextComponent infoPos = new StringTextComponent(posText);
 
                 if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
-                    drawOpenAtlasInfoLine(mc.fontRenderer, (GuiAtlas) mc.currentScreen, row++, infoPos, upscale);
+                    drawOpenAtlasInfoLine(matrix, mc.font, (GuiAtlas) mc.screen, row++, infoPos, upscale);
                 else if (renderPos != Configuration.InfoPosition.OPENATLAS)
-                    drawMiniMapInfoLine(mc.fontRenderer, row++, gameWidth, gameHeight, infoPos, upscale);
+                    drawMiniMapInfoLine(matrix, mc.font, row++, gameWidth, gameHeight, infoPos, upscale);
             }
             if (Configuration.HUD.enableBiomeInfo) {
-                String infoBiome = mc.world.getBiome(pos).getBiomeName();
+                TextComponent infoBiome = new TranslationTextComponent(Util.makeDescriptionId("biome", mc.level.getBiome(pos).getRegistryName()));
 
                 if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
-                    drawOpenAtlasInfoLine(mc.fontRenderer, (GuiAtlas) mc.currentScreen, row++, infoBiome, upscale);
+                    drawOpenAtlasInfoLine(matrix, mc.font, (GuiAtlas) mc.screen, row++, infoBiome, upscale);
                 else if (renderPos != Configuration.InfoPosition.OPENATLAS)
-                    drawMiniMapInfoLine(mc.fontRenderer, row++, gameWidth, gameHeight, infoBiome, upscale);
+                    drawMiniMapInfoLine(matrix, mc.font, row++, gameWidth, gameHeight, infoBiome, upscale);
             }
             if (Configuration.HUD.enableTimeInfo) {
-                MCDateTime dt = new MCDateTime(mc.world.getWorldTime());
-                String infoTime = String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min);
+                MCDateTime dt = new MCDateTime(mc.level.getGameTime());
+                TextComponent infoTime = new StringTextComponent(String.format("%s - %02d:%02d", dt.getDayName(), dt.hour, dt.min));
 
                 if (openAtlas && renderPos != Configuration.InfoPosition.MINIMAP)
-                    drawOpenAtlasInfoLine(mc.fontRenderer, (GuiAtlas) mc.currentScreen, row, infoTime, upscale);
+                    drawOpenAtlasInfoLine(matrix, mc.font, (GuiAtlas) mc.screen, row, infoTime, upscale);
                 else if (renderPos != Configuration.InfoPosition.OPENATLAS)
-                    drawMiniMapInfoLine(mc.fontRenderer, row, gameWidth, gameHeight, infoTime, upscale);
+                    drawMiniMapInfoLine(matrix, mc.font, row, gameWidth, gameHeight, infoTime, upscale);
             }
-            GlStateManager.popMatrix();
+            matrix.popPose();
         }
     }
 
-    @SideOnly(Side.CLIENT)
-    private static void drawMiniMapInfoLine(FontRenderer fontRenderer, int row, float gameWidth, float gameHeight, String info, float scale) {
-        float infoWidth = fontRenderer.getStringWidth(info);
+    @OnlyIn(Dist.CLIENT)
+    private static void drawMiniMapInfoLine(MatrixStack matrix, FontRenderer fontRenderer, int row, float gameWidth, float gameHeight, TextComponent info, float scale) {
+        float infoWidth = fontRenderer.width(info);
 
-        float atlasX = AAOConfig.position.xPosition * scale;
-        if (AAOConfig.position.alignRight) atlasX = (gameWidth - (atlasX + AAOConfig.position.width)) * scale;
-        float startX = (atlasX + (AAOConfig.position.width * scale / 2f - infoWidth / 2f));
+        float atlasX = AntiqueAtlasConfig.xPosition.get() * scale;
+        if (AntiqueAtlasConfig.alignRight.get()) atlasX = (gameWidth - (atlasX + AntiqueAtlasConfig.width.get())) * scale;
+        float startX = (atlasX + (AntiqueAtlasConfig.width.get() * scale / 2f - infoWidth / 2f));
 
-        float atlasY = (AAOConfig.position.yPosition + 2) * scale + row * (fontRenderer.FONT_HEIGHT + 1 * scale);
-        if (AAOConfig.position.alignBottom) atlasY = gameHeight * scale - (atlasY + AAOConfig.position.height * scale);
-        float startY = (atlasY + (AAOConfig.position.alignBottom ? -6 : AAOConfig.position.height) * scale);
+        float atlasY = (AntiqueAtlasConfig.yPosition.get() + 2) * scale + row * (fontRenderer.lineHeight + 1 * scale);
+        if (AntiqueAtlasConfig.alignBottom.get()) atlasY = gameHeight * scale - (atlasY + AntiqueAtlasConfig.height.get() * scale);
+        float startY = (atlasY + (AntiqueAtlasConfig.alignBottom.get() ? -6 : AntiqueAtlasConfig.height.get()) * scale);
 
-        fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
+        fontRenderer.draw(matrix, info, startX, startY, Configuration.HUD.RGB);
     }
 
-    @SideOnly(Side.CLIENT)
-    private static void drawOpenAtlasInfoLine(FontRenderer fontRenderer, GuiAtlas gui, int row, String info, float scale) {
-        float infoWidth = fontRenderer.getStringWidth(info);
+    @OnlyIn(Dist.CLIENT)
+    private static void drawOpenAtlasInfoLine(MatrixStack matrix, FontRenderer fontRenderer, GuiAtlas gui, int row, TextComponent info, float scale) {
+        float infoWidth = fontRenderer.width(info);
 
         float startX = (gui.getGuiX() * scale + (GuiAtlas.WIDTH * scale / 2f - infoWidth / 2f));
-        float startY = (gui.getGuiY() + 2) * scale + row * (fontRenderer.FONT_HEIGHT + 1 * scale) + GuiAtlas.HEIGHT * scale;
+        float startY = (gui.getGuiY() + 2) * scale + row * (fontRenderer.lineHeight + 1 * scale) + GuiAtlas.HEIGHT * scale;
 
-        fontRenderer.drawString(info, startX, startY, Configuration.HUD.RGB, false);
+        fontRenderer.draw(matrix, info, startX, startY, Configuration.HUD.RGB);
     }
 }

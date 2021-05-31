@@ -4,11 +4,11 @@ import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.core.Configuration;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import de.shyrik.atlasextras.network.packet.TravelEffectPacket;
-import net.minecraft.block.BlockHorizontal;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.HorizontalBlock;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 
 import java.util.HashMap;
@@ -17,12 +17,12 @@ import java.util.UUID;
 
 public class TravelHandler {
 
-    private static Map<String, ICostHandler> handlers = new HashMap<>();
+    private static final Map<String, ICostHandler> handlers = new HashMap<>();
 
     public interface ICostHandler {
-        void pay(EntityPlayer player, BlockPos destination);
+        void pay(PlayerEntity player, BlockPos destination);
 
-        boolean canTravel(EntityPlayer player, BlockPos destination);
+        boolean canTravel(PlayerEntity player, BlockPos destination);
     }
 
     public static void registerCostHandler(String modid, ICostHandler handler) {
@@ -31,44 +31,41 @@ public class TravelHandler {
 
     public static void travel(World world, int markerId, String playerUUID) {
         MarkerMap map = MarkerMap.instance(world);
-        EntityPlayer player = world.getPlayerEntityByUUID(UUID.fromString(playerUUID));
+        PlayerEntity player = world.getPlayerByUUID(UUID.fromString(playerUUID));
         MarkerMap.Mark mark = map.get(markerId);
 
         if (mark != null && mark.canTravelTo) {
             if (player != null && map.hasJumpNearby(player.getPosition())) {
                 if (player.isCreative() || canTravel(mark.sourceMod, player, mark.pos)) {
                     if (tryTravel(world, player, mark.pos)) pay(mark.sourceMod, player, mark.pos);
-                    else player.sendMessage(new TextComponentTranslation("atlasextras.message.blocked"));
+                    else player.sendMessage(new TranslationTextComponent("atlasextras.message.blocked"), UUID.randomUUID());
                 }
             }
         }
     }
 
-    private static boolean tryTravel(World world, EntityPlayer player, BlockPos pos) {
-        if (player.isBeingRidden()) {
-            player.removePassengers();
-        }
-        if (player.isRiding()) {
-            player.dismountRidingEntity();
-        }
+    private static boolean tryTravel(World world, PlayerEntity player, BlockPos pos) {
+        player.stopRiding();
+        player.unRide();
+
         boolean flag = false;
 
         BlockPos targetLoc = pos;
-        if (world.getBlockState(pos).getBlock() instanceof BlockHorizontal) {
-            EnumFacing face = world.getBlockState(pos).getValue(BlockHorizontal.FACING);
-            targetLoc = pos.offset(face);
-            if (player.attemptTeleport(targetLoc.getX() + 0.5, targetLoc.getY() + 0.5, targetLoc.getZ() + 0.5)) {
+        if (world.getBlockState(pos).getBlock() instanceof HorizontalBlock) {
+            Direction face = world.getBlockState(pos).getValue(HorizontalBlock.FACING);
+            targetLoc = pos.relative(face);
+            if (player.randomTeleport(targetLoc.getX() + 0.5, targetLoc.getY() + 0.5, targetLoc.getZ() + 0.5, true)) {
                 NetworkHelper.sendAround(new TravelEffectPacket(player.getPosition()), player.getPosition(), player.dimension);
-                player.rotationYaw = getRotationYaw(face.getOpposite());
+                player.xRot = getRotationYaw(face.getOpposite());
                 flag = true;
             }
         }
         if (!flag) {
-            for (EnumFacing face : EnumFacing.VALUES) {
+            for (Direction face : Direction.values()) {
                 targetLoc = pos.offset(face);
-                if (player.attemptTeleport(targetLoc.getX() + 0.5, targetLoc.getY() + 0.5, targetLoc.getZ() + 0.5)) {
+                if (player.randomTeleport(targetLoc.getX() + 0.5, targetLoc.getY() + 0.5, targetLoc.getZ() + 0.5, true)) {
                     NetworkHelper.sendAround(new TravelEffectPacket(player.getPosition()), player.getPosition(), player.dimension);
-                    player.rotationYaw = getRotationYaw(face.getOpposite());
+                    player.xRot = getRotationYaw(face.getOpposite());
                     flag = true;
                     break;
                 }
@@ -80,7 +77,7 @@ public class TravelHandler {
         return flag;
     }
 
-    public static float getRotationYaw(EnumFacing facing) {
+    public static float getRotationYaw(Direction facing) {
         switch (facing) {
             case NORTH:
                 return 180f;
@@ -94,13 +91,13 @@ public class TravelHandler {
         return 0f;
     }
 
-    private static void pay(String modid, EntityPlayer player, BlockPos destination) {
+    private static void pay(String modid, PlayerEntity player, BlockPos destination) {
         if (!handlers.containsKey(modid) || Configuration.COSTPROVIDER.useOwnCostProvider)
             handlers.get(AtlasExtras.MODID).pay(player, destination);
         else handlers.get(modid).pay(player, destination);
     }
 
-    private static boolean canTravel(String modid, EntityPlayer player, BlockPos destination) {
+    private static boolean canTravel(String modid, PlayerEntity player, BlockPos destination) {
         if (!handlers.containsKey(modid) || Configuration.COSTPROVIDER.useOwnCostProvider)
             return handlers.get(AtlasExtras.MODID).canTravel(player, destination);
         return handlers.get(modid).canTravel(player, destination);

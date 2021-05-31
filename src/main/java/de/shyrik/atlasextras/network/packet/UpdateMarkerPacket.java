@@ -37,9 +37,9 @@ public class UpdateMarkerPacket implements IMessage, IMessageHandler<UpdateMarke
     @Override
     public void fromBytes(ByteBuf buf) {
         dimId = buf.readInt();
-        pos = BlockPos.fromLong(buf.readLong());
-        name = ByteBufUtils.readUTF8String(buf);
-        modId = ByteBufUtils.readUTF8String(buf);
+        pos = BlockPos.of(buf.readLong());
+        name = ByteBufUtils.getContentDump(buf);
+        modId = ByteBufUtils.getContentDump(buf);
 
         canTravelFrom = buf.readBoolean();
         canTravelTo = buf.readBoolean();
@@ -48,7 +48,8 @@ public class UpdateMarkerPacket implements IMessage, IMessageHandler<UpdateMarke
     @Override
     public void toBytes(ByteBuf buf) {
         buf.writeInt(dimId);
-        buf.writeLong(pos.toLong());
+        buf.writeLong(pos.asLong());
+        buf.write
         ByteBufUtils.writeUTF8String(buf, name);
         ByteBufUtils.writeUTF8String(buf, modId);
 

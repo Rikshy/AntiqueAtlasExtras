@@ -3,16 +3,13 @@ package de.shyrik.atlasextras.features.travel;
 import de.shyrik.atlasextras.AtlasExtras;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import de.shyrik.atlasextras.network.packet.MarkerClickPacket;
-import hunternif.mc.atlas.api.AtlasAPI;
-import hunternif.mc.atlas.api.MarkerAPI;
-import hunternif.mc.atlas.event.MarkerClickedEvent;
-import hunternif.mc.atlas.marker.Marker;
+import de.shyrik.atlasextras.util.AtlasHelper;
+import hunternif.mc.impl.atlas.api.AtlasAPI;
+import hunternif.mc.impl.atlas.api.MarkerAPI;
+import hunternif.mc.impl.atlas.marker.Marker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class AtlasHandler {
 
@@ -23,7 +20,7 @@ public class AtlasHandler {
     }
 
     public static void addMarker(World world, BlockPos pos, String name, boolean canTravelTo, boolean canTravelFrom, String modId) {
-        ResourceLocation markerType = canTravelTo && canTravelFrom ? AtlasExtras.MARKER_TRAVEL : canTravelTo ? AtlasExtras.MARKER_TRAVELTO : AtlasExtras.MARKER_TRAVELFROM;
+        ResourceLocation markerType = canTravelTo && canTravelFrom ? AtlasHelper.MARKER_TRAVEL : canTravelTo ? AtlasHelper.MARKER_TRAVELTO : AtlasHelper.MARKER_TRAVELFROM;
         MarkerMap map = MarkerMap.instance(world);
         MarkerAPI api = AtlasAPI.getMarkerAPI();
         MarkerMap.Mark mark = map.getFromPos(pos);
@@ -48,7 +45,7 @@ public class AtlasHandler {
         if (mark == null) {
             int i = 0;
             while (++i < blockHeight && mark == null) {
-                mark = markers.getFromPos(pos.down(i));
+                mark = markers.getFromPos(pos.below(i));
             }
         }
 

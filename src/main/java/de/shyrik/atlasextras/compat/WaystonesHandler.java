@@ -4,19 +4,13 @@ import de.shyrik.atlasextras.features.travel.AtlasHandler;
 import de.shyrik.atlasextras.features.travel.TravelHandler;
 import de.shyrik.atlasextras.network.NetworkHelper;
 import de.shyrik.atlasextras.network.packet.UpdateMarkerPacket;
-import net.blay09.mods.waystones.PlayerWaystoneData;
-import net.blay09.mods.waystones.PlayerWaystoneHelper;
-import net.blay09.mods.waystones.WaystoneConfig;
-import net.blay09.mods.waystones.block.BlockWaystone;
-import net.blay09.mods.waystones.util.WaystoneActivatedEvent;
-import net.blay09.mods.waystones.util.WaystoneEntry;
-import net.minecraft.entity.player.EntityPlayer;
+import net.blay09.mods.waystones.api.WaystoneActivatedEvent;
+import net.blay09.mods.waystones.block.WaystoneBlock;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.world.BlockEvent;
-import net.minecraftforge.fml.common.Optional;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 
 @Optional.Interface(iface = "de.shyrik.atlasextras.features.travel.TravelHandler.ICostHandler", modid = WaystonesHandler.MODID)
@@ -26,19 +20,19 @@ public class WaystonesHandler implements TravelHandler.ICostHandler {
     @SubscribeEvent
     @Optional.Method(modid = MODID)
     public void onWaystoneActivated(WaystoneActivatedEvent event) {
-        NetworkHelper.sendToServer(new UpdateMarkerPacket(event.getDimension(), event.getPos(), event.getWaystoneName(), true, true, MODID));
+        NetworkHelper.sendToServer(new UpdateMarkerPacket(event.getDimension(), event.getPlayer().blockPosition(), event.getWaystone().getName(), true, true, MODID));
     }
 
     @SubscribeEvent
     @Optional.Method(modid = MODID)
     public void onWaystoneBroken(BlockEvent.BreakEvent event) {
-        if (!event.getWorld().isRemote && event.getState().getBlock() instanceof BlockWaystone) {
+        if (!event.getWorld().isClientSide() && event.getState().getBlock() instanceof WaystoneBlock) {
             AtlasHandler.removeMarker(event.getWorld(), event.getPos(), 2);
         }
     }
 
     @Override
-    public void pay(EntityPlayer player, BlockPos destination) {
+    public void pay(PlayerEntity player, BlockPos destination) {
         int dist = (int) Math.sqrt(player.getDistanceSqToCenter(destination));
         int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
         player.addExperienceLevel(-xpLevelCost);
@@ -46,7 +40,7 @@ public class WaystonesHandler implements TravelHandler.ICostHandler {
     }
 
     @Override
-    public boolean canTravel(EntityPlayer player, BlockPos destination) {
+    public boolean canTravel(PlayerEntity player, BlockPos destination) {
         int dist = (int) Math.sqrt(player.getDistanceSqToCenter(destination));
         int xpLevelCost = WaystoneConfig.general.blocksPerXPLevel > 0 ? MathHelper.clamp(dist / WaystoneConfig.general.blocksPerXPLevel, 0, WaystoneConfig.general.maximumXpCost) : 0;
 

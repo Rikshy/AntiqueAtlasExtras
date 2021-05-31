@@ -22,6 +22,6 @@ public class MCDateTime {
     }
 
     public String getDayName() {
-        return I18n.format("atlasextras.datetime.day." + DAYS[dayOfWeek]);
+        return I18n.get("atlasextras.datetime.day." + DAYS[dayOfWeek]);
     }
 }
